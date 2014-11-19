@@ -108,4 +108,22 @@ public interface AuthService
 	 */
 	public Service getService ( AccessToken accToken , String id );
 	
+	/**
+	 * this method logs in the user with valid credentials and generates accToken for him/her,
+	 * this method considered to be the start point of user's session
+	 * @param String : login
+	 * @param String : password
+	 * @return AccessToken : accToken
+	 * @throws LoginFailedException
+	 */
+	public AccessToken login( String login, String password ) throws LoginFailedException;
+	
+	/**
+	 * this method logs out the user by invalidating accToken,
+	 * this method considered to be the end point of user's session
+	 * @param AccessToken : accToken
+	 * @param String : login
+	 * @throws LoginFailedException
+	 */
+	public void logout( AccessToken accToken, String login ) throws LoginFailedException;
 }

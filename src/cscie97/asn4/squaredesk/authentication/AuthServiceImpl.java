@@ -1,8 +1,15 @@
 package cscie97.asn4.squaredesk.authentication;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import cscie97.asn3.squaredesk.renter.Booking;
+import cscie97.asn3.squaredesk.renter.RenterServiceImpl;
 
 /**
  * AuthServiceImpl - square desk authentication service implementation class 
@@ -17,8 +24,9 @@ public class AuthServiceImpl implements AuthService
 	private Map<String, AccessToken> accessTokenMap;
 	private Map<String, UserNamePassword> credsForUserMap;
 	private Utils utils;
+	private static AuthServiceImpl _obj;
 	
-	public AuthServiceImpl()
+	private AuthServiceImpl()
 	{
 		registeredUsersMap = new HashMap<String, RegisteredUser>();
 		entitlementMap = new HashMap<String, Entitlement>();
@@ -28,6 +36,20 @@ public class AuthServiceImpl implements AuthService
 		utils = new Utils();
 	}
 
+    /**
+     * A special static method to access the single AuthServiceImpl instance
+     * @return _obj - type: AuthServiceImpl
+     */
+    public static AuthServiceImpl getInstance() 
+    {
+    	//Checking if the instance is null, then it will create new one and return it
+        if (_obj == null)  
+        //otherwise it will return previous one.
+        {
+            _obj = new AuthServiceImpl();
+        }
+        return _obj;
+    }
 	
 	/**
 	 * method to create new registered user and put it in registeredUsersMap; method restricted to admin only
@@ -300,5 +322,91 @@ public class AuthServiceImpl implements AuthService
 		}
 		
 		accessTokenMap.remove( accessTokenId ); //invalidate token
+	}
+	
+	/**
+	 * method to validate calls made by user to certain API Services' methods
+	 * @param AccessToken : accToken
+	 * @param String : permissionId
+	 * @return true if validation is successful, false if opposite
+	 */
+	public Boolean validateAccess( AccessToken accToken, String permissionId )
+	{
+		Boolean result = true;
+			
+		Date accTokenStartingTime = accToken.getStartingTime();
+		Date timeNow = Calendar.getInstance().getTime();
+		long timeElapsed = timeNow.getTime() - accTokenStartingTime.getTime();
+		
+		// if > 30 min - invalidate the token, set token status to FALSE and make validateAccess return FALSE
+		if ( timeElapsed > 30*60*1000 )
+		{
+			result = false;
+			accToken.setStatus( result );
+			return result;
+		}
+		else
+		{
+			accToken.setStartingTime( timeNow );
+		}
+		
+		String accTokenId = accToken.getTokenId();
+		Boolean accTokenStatus = accToken.getStatus();
+		if ( !accessTokenMap.containsKey( accTokenId ) || accTokenStatus.equals( false ) )
+		{
+			result = false;
+			return result;
+		}
+		
+		// switch to permission part
+		String userId = accToken.getUserId();
+		Entitlement role = entitlementMap.get( userId );
+		//don't care about the role of the roles
+		List<Entitlement> entList = role.getEntList(); // could be list of Services or List of Roles
+		
+		// assume list of Services
+		result = false;
+		for ( Entitlement entEntry : entList )
+		{
+			if ( entEntry.getId().equals( permissionId ) )
+			{	
+				result = true;
+			}
+		}
+		return result;
+	}
+	
+	public String getInventory()
+	{
+		String result = "";
+		
+		AuthServiceVisitor visitor = new AuthServiceVisitor();
+		
+		//private Map<String, RegisteredUser> registeredUsersMap;
+		
+		Iterator<Entry<String,RegisteredUser>> entries = registeredUsersMap.entrySet().iterator();
+		RegisteredUser regUser;
+		while (entries.hasNext()) 
+		{
+		  Entry<String, RegisteredUser> thisEntry = entries.next();
+		  regUser = thisEntry.getValue();
+		  if ( regUser != null)
+		  {
+
+			  
+			  
+		  }
+		}
+		
+		
+		for(Visitable item: items)		
+		{
+
+			item.accept(visitor);
+
+		}
+		
+		
+		return result;
 	}
 }

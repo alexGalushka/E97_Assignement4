@@ -14,10 +14,6 @@ public class AccessToken
 	
 	private String userId; // added for optimization and flexibility
 	
-	//later on
-	//Date now = Calendar.getInstance().getTime();
-	//long timeElapsed = now.getTime() - startingTime.getTime();
-	
 	public AccessToken ()
 	{
 		this.id = GuidGenerator.getInstance().generateProviderGuid();
@@ -73,11 +69,19 @@ public class AccessToken
 
 	/**
 	 * mutator method
-	 * @param userId the userId to set
+	 * @param userId to set
 	 */
 	public void setUserId(String userId)
 	{
 		this.userId = userId;
 	}
-		
+
+	/**
+	 * mutator method
+	 * @param startingTime to set
+	 */
+	public void setStartingTime (Date startingTime)
+	{
+		this.startingTime = startingTime;
+	}
 }

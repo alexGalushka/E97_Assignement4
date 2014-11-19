@@ -1,5 +1,7 @@
 package cscie97.asn4.squaredesk.authentication;
 
+import java.util.List;
+
 /**
  * Interface Entitlement: implemented by Role and Permission classes
  * @author APGalush
@@ -46,4 +48,10 @@ public interface Entitlement extends Visitable
 	 * @param String : description; role's description to be set
 	 */
 	public void setDescription(String description);
+	
+	/**
+	 * accessor method
+	 * @return List<Entitlement> : entList
+	 */
+	public List<Entitlement> getEntList();
 }

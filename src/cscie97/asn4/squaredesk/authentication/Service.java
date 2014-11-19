@@ -142,5 +142,11 @@ public class Service implements Visitable, Entitlement
 		// this is leaf node - N/A to this class.
 		
 	}
+
+	public List<Entitlement> getEntList()
+	{
+		/// this is leaf node - N/A to this class.
+		return null;
+	}
 	
 }
