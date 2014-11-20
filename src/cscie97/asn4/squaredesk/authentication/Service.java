@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class Service implements Visitable, Entitlement
+public class Service implements Visitable
 {
 	private String id;
 	private String name;
@@ -129,24 +129,4 @@ public class Service implements Visitable, Entitlement
 		v.visit(this);	
 	}
 
-
-	public void add(Entitlement entitlement)
-	{
-		// this is leaf node - N/A to this class.
-		
-	}
-
-
-	public void remove(Entitlement entitlement)
-	{
-		// this is leaf node - N/A to this class.
-		
-	}
-
-	public List<Entitlement> getEntList()
-	{
-		/// this is leaf node - N/A to this class.
-		return null;
-	}
-	
 }

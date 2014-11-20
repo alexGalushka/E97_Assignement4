@@ -8,6 +8,10 @@ import java.util.Map;
 
 import cscie97.asn2.squaredesk.provider.OfficeSpace;
 import cscie97.asn2.squaredesk.provider.OfficeSpaceNotFoundException;
+import cscie97.asn4.squaredesk.authentication.AccessNotAllowedException;
+import cscie97.asn4.squaredesk.authentication.AccessToken;
+import cscie97.asn4.squaredesk.authentication.AuthService;
+import cscie97.asn4.squaredesk.authentication.AuthServiceImpl;
 import cscie97.common.squaredesk.Profile;
 import cscie97.common.squaredesk.ProfileAlreadyExistsException;
 import cscie97.common.squaredesk.ProfileNotFoundException;
@@ -25,10 +29,9 @@ public class RenterServiceImpl implements RenterService
 	private UserBucket userBucket;
 	/** The office renter map. */
 	private Map<String, User> renterMap;
-	
 	private static RenterServiceImpl _obj;
-	
 	private SchedulingService schedService;
+	private AuthService authService;
 	
     private RenterServiceImpl ()
     {
@@ -36,9 +39,8 @@ public class RenterServiceImpl implements RenterService
     	userBucket = UserBucket.getInstance();
     	schedService = SchedulingService.getInstance();
     	searchEngine = new SearchEngine();
+    	authService = AuthServiceImpl.getInstance();
     }
-    
-    
     
     /**
      * A special static method to access the single RenterServiceImpl instance
@@ -58,12 +60,17 @@ public class RenterServiceImpl implements RenterService
 
     /**
      * this method books the OfficeSpace based on the returned search of the criteria renter has 
-     * @param authToken
+     * @param AccessToken accToken
      * @param uutRenter
      * @throws BookingException 
+     * @throws AccessNotAllowedException 
      */
-    public Boolean bookOfficeSpace ( String authToken, Profile uutRenter, Rate rate, PaymentStatus paymentStatus ) throws BookingException
+    public Boolean bookOfficeSpace ( AccessToken accToken, Profile uutRenter, Rate rate, PaymentStatus paymentStatus ) throws BookingException, AccessNotAllowedException
     {
+		if ( !authService.validateAccess( accToken, "create_booking" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to create_booking at this moment" );
+		}
     	boolean result = false;
     	OfficeSpace officespace = null;
     	Criteria criteria = uutRenter.getCriteria();
@@ -86,6 +93,24 @@ public class RenterServiceImpl implements RenterService
         return result;
     }
     
+    /**
+     * wrapper method for the search method of Search Engine class, return list of office spaces based on the search criteria
+     * @param accToken
+     * @param uutRenter
+     * @return List<OfficeSpace> : officeSpacesList
+     * @throws AccessNotAllowedException 
+     */
+    public List<OfficeSpace> searchOfficeSpace ( AccessToken accToken, Profile uutRenter ) throws AccessNotAllowedException
+    {
+		if ( !authService.validateAccess( accToken, "search_for_office_space" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to search_for_office_space at this moment" );
+		}
+    	List<OfficeSpace> officeSpacesList;
+    	Criteria criteria = uutRenter.getCriteria();
+    	officeSpacesList = searchEngine.SearchForOfficeSpace ( criteria );
+    	return officeSpacesList;
+    }
     
 	/**
 	 * accessor method
@@ -108,13 +133,18 @@ public class RenterServiceImpl implements RenterService
 	
 	/**
 	 * creates new Renter
-	 * @param authToken
+	 * @param AccessToken accToken
 	 * @param profile
 	 * @return
 	 * @throws ProfileAlreadyExistsException
+	 * @throws AccessNotAllowedException 
 	 */
-	public String createRenter ( String authToken, Profile  profile ) throws ProfileAlreadyExistsException
+	public String createRenter ( AccessToken accToken, Profile  profile ) throws ProfileAlreadyExistsException, AccessNotAllowedException
 	{
+		if ( !authService.validateAccess( accToken, "create_renter" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to create_renter at this moment" );
+		}
 		User user = new User();
 		String userId = user.getGuid();
 		profile.setGuid( userId );
@@ -128,12 +158,11 @@ public class RenterServiceImpl implements RenterService
 	
 	/**
 	 * returns renter Profile
-	 * @param authToken
 	 * @param renterId
 	 * @return
 	 * @throws ProfileNotFoundException
 	 */
-	public Profile getRenter( String authToken, String renterId ) throws ProfileNotFoundException
+	public Profile getRenter( String renterId ) throws ProfileNotFoundException
 	{
 		User user = null;
 		Profile profile = null;
@@ -151,11 +180,9 @@ public class RenterServiceImpl implements RenterService
 	
 	/**
 	 * Returns whole list of renters.
-	 *
-	 * @param authToken the auth token
 	 * @return List<Renter>
 	 */
-	public List<Profile> getRenterList ( String authToken )
+	public List<Profile> getRenterList ()
 	{
 		List<Profile> result = new LinkedList<Profile>();
 		Map<String, User> userBucketMap = userBucket.getUserMap();
@@ -179,14 +206,18 @@ public class RenterServiceImpl implements RenterService
 	/**
 	 * Updates the renter, new renter instance has to be passed in.
 	 * If renterId not found, throws ProfileNotFoundException.
-	 *
-	 * @param authToken the auth token
+	 * @param AccessToken accToken
 	 * @param renterId the renter id
 	 * @param renter the renter
 	 * @throws ProfileNotFoundException the renter not found exception
+	 * @throws AccessNotAllowedException 
 	 */
-	public void updateRenter ( String authToken, Profile renter ) throws ProfileNotFoundException
+	public void updateRenter ( AccessToken accToken, Profile renter ) throws ProfileNotFoundException, AccessNotAllowedException
 	{
+		if ( !authService.validateAccess( accToken, "update_renter" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to update_renter at this moment" );
+		}
 		User user = null;
 		String renterId = renter.getGuid();
 		user = userBucket.getUser( renterId );
@@ -202,15 +233,20 @@ public class RenterServiceImpl implements RenterService
 	}
 	
 	/**
-	 * Deleted the renter.
+	 * Deleted the renter
 	 * If renterId not found, throws ProfileNotFoundException.
-	 * @param authToken the auth token
+	 * @param AccessToken accToken
 	 * @param renterId the renter id
 	 * @throws ProfileNotFoundException the renter not found exception
+	 * @throws AccessNotAllowedException 
 	 * @throws OfficeSpaceNotFoundException 
 	 */
-	public void deleteRenter ( String authToken, String renterId ) throws ProfileNotFoundException
+	public void deleteRenter ( AccessToken accToken, String renterId ) throws ProfileNotFoundException, AccessNotAllowedException
 	{
+		if ( !authService.validateAccess( accToken, "delete_renter" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to delete_renter at this moment" );
+		}
 		User user = null;
 		user = userBucket.getUser( renterId );
 		if ( user != null )
@@ -228,15 +264,13 @@ public class RenterServiceImpl implements RenterService
 	 * Rate the renter. Rating is an integer from 0 to 5. The rating value is added to officeRenterRatingsMap.
 	 * if it is found throw RatingAlreadyExistsException. renterId is checked as well if it's not found
 	 *  - ProfileNotFoundException is thrown 
-	 *
-	 * @param authToken the auth token
 	 * @param renterId the renter id
 	 * @param providerId the provider id
 	 * @param rating the rating
 	 * @throws RatingAlreadyExistsException the rating already exists exception
 	 * @throws ProfileNotFoundException the renter not found exception
 	 */
-	public void rateRenter ( String authToken, String renterId,
+	public void rateRenter ( String renterId,
 			                 String providerId , Rating rating ) throws RatingAlreadyExistsException, ProfileNotFoundException 
 	{
 		if ( userBucket.getUserMap().containsKey( renterId ) )
@@ -268,14 +302,12 @@ public class RenterServiceImpl implements RenterService
 	 * The Rating correspondent to providerId is to be removed from officeProviderRatingMap within the officeSpaceMap,
 	 * if office space id is not found - ProfileNotFoundException is thrown;
 	 * if renterId is not found - RatingNotFoundExcepion is thrown.
-	 *
-	 * @param authToken the auth token
 	 * @param providerId the provider id
 	 * @param renterId the renter id
 	 * @throws RatingNotFoundExcepion the rating not found excepion
 	 * @throws ProfileNotFoundException the provider not found exception
 	 */
-	public void removeRenterRating ( String authToken, String renterId,
+	public void removeRenterRating (   String renterId,
 			                           String providerId) throws RatingNotFoundExcepion, ProfileNotFoundException
 	{
 		if (userBucket.getUserMap().containsKey( renterId ) )
@@ -303,14 +335,12 @@ public class RenterServiceImpl implements RenterService
 	
 	/**
 	 * Gets the rating list.
-	 *
-	 * @param authToken the auth token
 	 * @param renterId the renter id
 	 * @return the rating list
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 * @throws ProfileNotFoundException 
 	 */
-	public List<Rating> getRatingList ( String authToken, String renterId ) throws OfficeSpaceNotFoundException, ProfileNotFoundException
+	public List<Rating> getRatingList ( String renterId ) throws OfficeSpaceNotFoundException, ProfileNotFoundException
 	{
 		if ( userBucket.getUserMap().containsKey( renterId ) )
 		{
@@ -325,13 +355,6 @@ public class RenterServiceImpl implements RenterService
 		}
 	}
 
-	@Override
-	public Boolean bookOfficeSpace(String authToken, Renter renter, Rate rate,
-			PaymentStatus paymentStatus) throws BookingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
+
 	
 }

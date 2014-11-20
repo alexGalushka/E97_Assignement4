@@ -3,6 +3,8 @@ package cscie97.asn2.squaredesk.provider;
 import java.util.List;
 
 import cscie97.asn3.squaredesk.renter.Observer;
+import cscie97.asn4.squaredesk.authentication.AccessNotAllowedException;
+import cscie97.asn4.squaredesk.authentication.AccessToken;
 import cscie97.common.squaredesk.AccessException;
 import cscie97.common.squaredesk.Profile;
 import cscie97.common.squaredesk.ProfileAlreadyExistsException;
@@ -18,88 +20,77 @@ import cscie97.common.squaredesk.RatingNotFoundExcepion;
  */
 public interface ProviderService
 {
-	public String createProvider ( String authToken, Profile  profile ) throws ProfileAlreadyExistsException;
+	public String createProvider ( AccessToken accToken, Profile  profile ) throws ProfileAlreadyExistsException, AccessNotAllowedException;
 	
 	/**
 	 * Returns provider per passed in providerId,
 	 * if there is no match – throws ProfileNotFoundException .
-	 *
-	 * @param authToken the auth token
 	 * @param providerId the provider id
 	 * @return the provider
 	 * @throws ProfileNotFoundException the provider not found exception
 	 */
-	public Profile getProvider( String authToken, String providerId ) throws ProfileNotFoundException;
+	public Profile getProvider( String providerId ) throws ProfileNotFoundException;
 	
 	/**
 	 * Returns whole list of providers.
-	 *
-	 * @param authToken the auth token
 	 * @return List<OfficeProvider>
 	 */
-	public List<Profile> getProviderList ( String authToken );
+	public List<Profile> getProviderList ();
 	
 	/**
 	 * Updates the provider, new Provider instance has to be passed in.
 	 * If providerId not found, throws ProfileNotFoundException.
-	 *
-	 * @param authToken the auth token
 	 * @param providerId the provider id
 	 * @param provider the provider
 	 * @throws ProfileNotFoundException the provider not found exception
+	 * @throws AccessNotAllowedException 
 	 */
-	public void updateProvider ( String authToken, Profile provider ) throws ProfileNotFoundException;
+	public void updateProvider ( AccessToken accToken, Profile provider ) throws ProfileNotFoundException, AccessNotAllowedException;
 	
 	/**
 	 * Deleted the provider.
 	 * If providerId not found, throws ProfileNotFoundException.
-	 *
-	 * @param authToken the auth token
+	 * @param AccessToken accToken
 	 * @param providerId the provider id
 	 * @throws ProfileNotFoundException the provider not found exception
 	 * @throws OfficeSpaceNotFoundException 
+	 * @throws AccessNotAllowedException 
 	 */
-	public void deleteProvider ( String authToken, String providerId ) throws ProfileNotFoundException, OfficeSpaceNotFoundException;
+	public void deleteProvider ( AccessToken accToken, String providerId ) throws ProfileNotFoundException, OfficeSpaceNotFoundException, AccessNotAllowedException;
 	
 	/**
 	 * Rate the provider. Rating is an integer from 0 to 5. The rating value is added to officeProviderRatingsMap.
 	 * if it is found throw RatingAlreadyExistsException. ProviderId is checked as well if it's not found
 	 *  - ProfileNotFoundException is thrown 
-	 *
-	 * @param authToken the auth token
 	 * @param providerId the provider id
 	 * @param renterId the renter id
 	 * @param rating the rating
 	 * @throws RatingAlreadyExistsException the rating already exists exception
 	 * @throws ProfileNotFoundException the provider not found exception
 	 */
-	public void rateProvider ( String authToken, String providerId,
+	public void rateProvider ( String providerId,
 			                   String renterId , Rating rating ) throws RatingAlreadyExistsException, ProfileNotFoundException;
 	
 	/**
 	 * The Rating correspondent to renterId is to be removed from officeProviderRatingMap within the officeSpaceMap,
 	 * if office space id is not found - ProfileNotFoundException is thrown;
 	 * if renterId is not found - RatingNotFoundExcepion is thrown.
-	 *
-	 * @param authToken the auth token
 	 * @param providerId the provider id
 	 * @param renterId the renter id
 	 * @throws RatingNotFoundExcepion the rating not found excepion
 	 * @throws ProfileNotFoundException the provider not found exception
 	 */
-	public void removeProviderRating ( String authToken, String providerId,
+	public void removeProviderRating ( String providerId,
 			                           String renterId) throws RatingNotFoundExcepion, ProfileNotFoundException;
 	
 	/**
 	 * Gets the rating list.
-	 *
-	 * @param authToken the auth token
 	 * @param providerId the provider id
 	 * @return the rating list
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 * @throws ProfileNotFoundException 
 	 */
-	public List<Rating> getRatingList ( String authToken, String providerId ) throws OfficeSpaceNotFoundException, ProfileNotFoundException;
+	public List<Rating> getRatingList ( String providerId ) throws OfficeSpaceNotFoundException, ProfileNotFoundException;
 	
 	/**
 	 * Creates a new OfficeSpace: add office space to officeSpaceMap; check if it exists already
@@ -107,26 +98,23 @@ public interface ProviderService
 	 * Rating Field is initialized here.
 	 * Note: officeSpaceId has to be generated first! Check for officeSpaceIds and providerId in the id buckets,
 	 * if this check fails throw the 
-	 *
-	 * @param authToken the auth token
 	 * @param officeSpace the office space
 	 * @param guid the guid of the OfficeSpace
 	 * @throws OfficeSpaceAlreadyExistException the office space already exist exception
 	 * @throws AccessException the access exception
-	 */
-	public void createOfficeSpace ( String authToken, OfficeSpace officeSpace, String providerId )
-			                        throws OfficeSpaceAlreadyExistException, AccessException;
+	 * @throws AccessNotAllowedException 
+	 */ 
+	public void createOfficeSpace ( AccessToken accToken, OfficeSpace officeSpace, String providerId )
+			                        throws OfficeSpaceAlreadyExistException, AccessException, AccessNotAllowedException;
 	
 	/**
 	 * accessor method for officeSpaceMap attribute
 	 * if the guid not found in the map, it throws OfficeSpaceNotFoundException exception.
-	 *
-	 * @param authToken the auth token
 	 * @param guid the guid
 	 * @return OfficeSpace
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 */
-	public OfficeSpace getOfficeSpace ( String authToken, String guid ) throws OfficeSpaceNotFoundException;
+	public OfficeSpace getOfficeSpace ( String guid ) throws OfficeSpaceNotFoundException;
 	
 	/**
 	 * Gets the office space list.
@@ -145,28 +133,28 @@ public interface ProviderService
 	/**
 	 * updates particular office space in the office space map with a new office space based on guid passed in
 	 * if the guid not found in the map, it throws OfficeSpaceNotFoundException exception.
-	 *
-	 * @param authToken the auth token
+	 * @param AccessToken accTokenn
 	 * @param guid the guid
 	 * @param officeSpaceId the office space id
 	 * @param updatedOffice the updated office
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
+	 * @throws AccessNotAllowedException 
 	 */
-	public void updateOfficeSpace ( String authToken, String providerId,
-			                        OfficeSpace updatedOffice) throws OfficeSpaceNotFoundException;
+	public void updateOfficeSpace ( AccessToken accToken, String providerId,
+			                        OfficeSpace updatedOffice) throws OfficeSpaceNotFoundException, AccessNotAllowedException;
 	
 	/**
 	 * removed particular office space from the office space map based on guid passed in
 	 * if the guid not found in the map, it throws OfficeSpaceNotFoundException exception.
-	 *
-	 * @param authToken the auth token
+	 * @param AccessToken accToken
 	 * @param guid the guid
 	 * @param officeSpaceId the office space id
 	 * @param updatedOffice the updated office
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
+	 * @throws AccessNotAllowedException 
 	 */
-	public void removeOfficeSpace ( String authToken, String providerId,
-                                    String officeSpaceId ) throws OfficeSpaceNotFoundException;	
+	public void removeOfficeSpace ( AccessToken accToken, String providerId,
+                                    String officeSpaceId ) throws OfficeSpaceNotFoundException, AccessNotAllowedException;	
 	
 	/**
 	 * The new Rating is added to officeSpaceRatingMap within the officeSpaceMap,

@@ -3,7 +3,7 @@ package cscie97.asn4.squaredesk.authentication;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RegisteredUser 
+public class RegisteredUser implements Visitable
 {
 	private String id;
 	private String name;
@@ -144,5 +144,15 @@ public class RegisteredUser
 	{
 		this.name = name;
 	}
-	
+
+	/**
+	 * method used in Visitor pattern implementation,
+	 * used by all Visitables to provide access to their instances by the Visitor
+	 * @param Visitor : v
+	 */
+	public void acceptVisitor( Visitor v )
+	{
+		v.visit( this );
+	}
+
 }

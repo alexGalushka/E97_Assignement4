@@ -2,6 +2,7 @@ package cscie97.asn4.squaredesk.authentication;
 
 import java.util.List;
 
+
 public interface AuthService 
 {
 	/**
@@ -126,4 +127,18 @@ public interface AuthService
 	 * @throws LoginFailedException
 	 */
 	public void logout( AccessToken accToken, String login ) throws LoginFailedException;
+	
+	/**
+	 * method to validate calls made by user to certain API Services' methods
+	 * @param AccessToken : accToken
+	 * @param String : permissionId
+	 * @return true if validation is successful, false if opposite
+	 */
+	public Boolean validateAccess( AccessToken accToken, String permissionId );
+	
+	/**
+	 * provides the configuration data of the Authentication Service instance
+	 * @return String : result
+	 */
+	public String getInventory();
 }

@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import cscie97.asn3.squaredesk.renter.Booking;
-import cscie97.asn3.squaredesk.renter.RenterServiceImpl;
 
 /**
  * AuthServiceImpl - square desk authentication service implementation class 
@@ -376,6 +374,10 @@ public class AuthServiceImpl implements AuthService
 		return result;
 	}
 	
+	/**
+	 * provides the configuration data of the Authentication Service instance
+	 * @return String : result
+	 */
 	public String getInventory()
 	{
 		String result = "";
@@ -384,29 +386,47 @@ public class AuthServiceImpl implements AuthService
 		
 		//private Map<String, RegisteredUser> registeredUsersMap;
 		
-		Iterator<Entry<String,RegisteredUser>> entries = registeredUsersMap.entrySet().iterator();
+		Iterator<Entry<String, Service>> entriesServices = serviceMap.entrySet().iterator();
+		Service service;
+		while (entriesServices.hasNext()) 
+		{
+	        Entry<String, Service> thisEntry = entriesServices.next();
+	        service = thisEntry.getValue();
+			if ( service != null)
+		    {
+				service.acceptVisitor( visitor );
+			}
+			
+		}
+		
+
+		Iterator<Entry<String, Entitlement>> entriesEnt = entitlementMap.entrySet().iterator();
+		Entitlement ent;
+		while (entriesEnt.hasNext()) 
+		{
+	        Entry<String, Entitlement> thisEntry = entriesEnt.next();
+	        ent = thisEntry.getValue();
+			if ( ent != null)
+		    {
+				ent.acceptVisitor( visitor );
+			}
+			
+		}
+		
+		Iterator<Entry<String,RegisteredUser>> entriesRegUser = registeredUsersMap.entrySet().iterator();
 		RegisteredUser regUser;
-		while (entries.hasNext()) 
+		while (entriesRegUser.hasNext()) 
 		{
-		  Entry<String, RegisteredUser> thisEntry = entries.next();
-		  regUser = thisEntry.getValue();
-		  if ( regUser != null)
-		  {
-
-			  
-			  
-		  }
+	        Entry<String, RegisteredUser> thisEntry = entriesRegUser.next();
+			regUser = thisEntry.getValue();
+			if ( regUser != null)
+		    {
+			    regUser.acceptVisitor( visitor );
+			}
+			
 		}
 		
-		
-		for(Visitable item: items)		
-		{
-
-			item.accept(visitor);
-
-		}
-		
-		
+		result = visitor.getInventoryFromVisitor();
 		return result;
 	}
 }

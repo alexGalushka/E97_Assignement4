@@ -1,41 +1,88 @@
 package cscie97.asn4.squaredesk.authentication;
 
+import java.util.List;
+
+/**
+ * AuthServiceVisitor Class implements Visitor interface
+ * authentication service configuration data collector
+ * @author APGalush
+ *
+ */
 public class AuthServiceVisitor implements Visitor
 {
-
-	public void visit(AuthServiceImpl authServ) 
+	private String inventory;
+	
+	public AuthServiceVisitor()
 	{
-		// authServ.
-		
+		inventory = "\nList of Authenication Service Inventory:\n";
 	}
     
-	public void visit(RegisteredUser regUser)
+	/**
+	 * visit method ( intended to visit RegisteredUser instance )
+	 * @param RegisteredUser : regUser
+	 *
+	 */
+	public void visit( RegisteredUser regUser )
 	{
-		regUser.getId();
-		regUser.getListOfEntitlements();
-		//regUser.g
+		inventory += "  <Users>\n";
+		inventory += "    "+regUser.getId()+":\n";
+		inventory += "    Name: "+regUser.getName()+"\n";
+		inventory += "      Credentials:\n";
 		
+		inventory += "      Credentials:\n";
+		inventory += "        login: "+regUser.getCreds().getLogin()+"\n";
+		inventory += "        password hash: "+regUser.getCreds().getPasswordHash()+"\n";
+		inventory += "      Access Token:\n";
+		inventory += "        TokenId: "+regUser.getAccToken().getTokenId()+"\n";
+		inventory += "        Time Stamp: "+regUser.getAccToken().getStartingTime()+"\n";
+		inventory += "        Status: "+regUser.getAccToken().getStatus()+"\n";
 	}
 	
-	public void visit(Entitlement ent)
+	/**
+	 * visit method ( intended to visit Role instance )
+	 * @param Entitlement : ent
+	 *
+	 */
+	public void visit( Entitlement ent )
 	{
-		ent.getId();
-		// then depends if it's a role or permission (node or leaf)
-		
+		inventory += "  <Roles>\n";
+		inventory += "    "+ent.getId()+":\n";
+		List<Entitlement> entList = ent.getEntList();
+		for ( Entitlement entit : entList )
+		{
+			inventory += "      "+entit.getId()+"\n";
+		}
 	}
 	
-	public void visit(Service service)
+	/**
+	 * visit method ( intended to visit Role instance )
+	 * @param Entitlement : ent
+	 *
+	 */
+	public void visit( Service service )
 	{
-		service.getId();
-		service.getListOfPermissions();
-		
+		inventory += "  <Services>\n";
+		inventory += "    "+service.getId()+":\n";
+		List<Permission> permiList = service.getListOfPermissions();
+		for ( Permission perm : permiList )
+		{
+			inventory += "      "+perm.getId()+"\n";
+		}
 	}
 
-	@Override
-	public void visit(Permission permission) {
-		// TODO Auto-generated method stub
-		
+
+	public void visit( Permission permission ) 
+	{
+
+		// doesn't make sense to implement, cause Permissions are accessible through aggregation of composition...
 	}
 
-
+	/**
+	 * accessor method, returns formatted inventory string 
+	 * @return String : inventory
+	 */
+	public String getInventoryFromVisitor()
+	{
+		return inventory;
+	}
 }

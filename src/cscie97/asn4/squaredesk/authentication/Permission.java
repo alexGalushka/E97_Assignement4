@@ -1,6 +1,8 @@
 package cscie97.asn4.squaredesk.authentication;
 
-public class Permission implements Visitable
+import java.util.List;
+
+public class Permission implements Visitable, Entitlement
 {
 	private String id;
 	private String name;
@@ -82,6 +84,25 @@ public class Permission implements Visitable
 	public void acceptVisitor(Visitor v) 
 	{
 		v.visit(this);	
+	}
+	
+	public void add(Entitlement entitlement)
+	{
+		// this is leaf node - N/A to this class.
+		
+	}
+
+
+	public void remove(Entitlement entitlement)
+	{
+		// this is leaf node - N/A to this class.
+		
+	}
+
+	public List<Entitlement> getEntList()
+	{
+		/// this is leaf node - N/A to this class.
+		return null;
 	}
 
 }
