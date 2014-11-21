@@ -14,7 +14,7 @@ public class AuthServiceVisitor implements Visitor
 	
 	public AuthServiceVisitor()
 	{
-		inventory = "\nList of Authenication Service Inventory:\n";
+		inventory = "\nList of Authenication Service Inventory:\n  <Services>\n";
 	}
     
 	/**
@@ -25,17 +25,18 @@ public class AuthServiceVisitor implements Visitor
 	public void visit( RegisteredUser regUser )
 	{
 		inventory += "  <Users>\n";
-		inventory += "    "+regUser.getId()+":\n";
+		inventory += "    User ID: "+regUser.getId()+"\n";
 		inventory += "    Name: "+regUser.getName()+"\n";
-		inventory += "      Credentials:\n";
-		
-		inventory += "      Credentials:\n";
-		inventory += "        login: "+regUser.getCreds().getLogin()+"\n";
-		inventory += "        password hash: "+regUser.getCreds().getPasswordHash()+"\n";
-		inventory += "      Access Token:\n";
-		inventory += "        TokenId: "+regUser.getAccToken().getTokenId()+"\n";
-		inventory += "        Time Stamp: "+regUser.getAccToken().getStartingTime()+"\n";
-		inventory += "        Status: "+regUser.getAccToken().getStatus()+"\n";
+		inventory += "    Credentials:\n";
+		inventory += "      login: "+regUser.getCreds().getLogin()+"\n";
+		inventory += "      password hash: "+regUser.getCreds().getPasswordHash()+"\n";
+		inventory += "    Access Token:\n";
+		if ( regUser.getAccToken() != null )
+		{
+			inventory += "      TokenId: "+regUser.getAccToken().getTokenId()+"\n";
+			inventory += "      Time Stamp: "+regUser.getAccToken().getStartingTime()+"\n";
+			inventory += "      Status: "+regUser.getAccToken().getStatus()+"\n";
+		}
 	}
 	
 	/**
@@ -49,8 +50,11 @@ public class AuthServiceVisitor implements Visitor
 		inventory += "    "+ent.getId()+":\n";
 		List<Entitlement> entList = ent.getEntList();
 		for ( Entitlement entit : entList )
-		{
-			inventory += "      "+entit.getId()+"\n";
+		{ 
+			if ( entit!= null )
+			{
+				inventory += "      "+entit.getId()+"\n";
+			}
 		}
 	}
 	
@@ -61,12 +65,15 @@ public class AuthServiceVisitor implements Visitor
 	 */
 	public void visit( Service service )
 	{
-		inventory += "  <Services>\n";
+		//inventory += "  <Services>\n";
 		inventory += "    "+service.getId()+":\n";
-		List<Permission> permiList = service.getListOfPermissions();
-		for ( Permission perm : permiList )
+		List<Entitlement> permiList = service.getListOfPermissions();
+		for ( Entitlement perm : permiList )
 		{
-			inventory += "      "+perm.getId()+"\n";
+			if ( perm!= null )
+			{
+			 inventory += "      "+perm.getId()+"\n";
+			}
 		}
 	}
 
@@ -84,5 +91,23 @@ public class AuthServiceVisitor implements Visitor
 	public String getInventoryFromVisitor()
 	{
 		return inventory;
+	}
+
+	/**
+	 * accessor method
+	 * @return the inventory
+	 */
+	public String getInventory()
+	{
+		return inventory;
+	}
+
+	/**
+	 * mutator method
+	 * @param inventory the inventory to set
+	 */
+	public void setInventory(String inventory) 
+	{
+		this.inventory = inventory;
 	}
 }

@@ -18,6 +18,12 @@ public class Role implements Entitlement
 		this.entList = new LinkedList<Entitlement>();
 	}
 	
+	/**
+	 * Parameterized constructor
+	 * @param id
+	 * @param name
+	 * @param description
+	 */
 	public Role(String id, String name, String description)
 	{
 		this.id = id;
@@ -26,15 +32,20 @@ public class Role implements Entitlement
 		this.entList = new LinkedList<Entitlement>();
 	}
 	
+	/**
+	 * adding entitlment to the list
+	 */
 	public void add( Entitlement entitlement )
 	{
 		if (!entList.contains(entitlement))
 		{
 			entList.add(entitlement);
-	
 		}
 	}
 	
+	/**
+	 * removing entitlment from the list
+	 */
 	public void remove( Entitlement entitlement )
 	{
 		if(entList.contains(entitlement))

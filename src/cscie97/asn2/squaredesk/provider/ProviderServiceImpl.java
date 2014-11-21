@@ -83,6 +83,8 @@ public class ProviderServiceImpl implements ProviderService, Subject
 			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to create_provider at this moment" );
 		}
 		User user = new User();
+		// set provider user with guid passed in from the Registered User's AccessToken
+		user.setGuid( accToken.getUserId() );
 		String userId = user.getGuid();
 		profile.setGuid( userId );
 		user.setAccount( profile.getAccount() );

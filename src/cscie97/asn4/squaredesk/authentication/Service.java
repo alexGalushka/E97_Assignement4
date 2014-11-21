@@ -10,22 +10,22 @@ public class Service implements Visitable
 	private String name;
 	private String description;
 
-	List<Permission> permiList;
+	List<Entitlement> permiList;
 	
 	public Service()
 	{
 		this.id = "";
 		this.name = "";
 		this.description = "";
-		permiList = new LinkedList<Permission>();
+		permiList = new LinkedList<Entitlement>();
 	}
 	
-	public Service( String id, String name, String description, List<Permission> permiList )
+	public Service( String id, String name, String description, List<Entitlement> permiList2 )
 	{
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.permiList = permiList;
+		this.permiList = permiList2;
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class Service implements Visitable
 	 * accessor method
 	 * @return List<Permission> : permiList
 	 */
-	public List<Permission> getListOfPermissions ()
+	public List<Entitlement> getListOfPermissions ()
 	{
 		return permiList;
 	}

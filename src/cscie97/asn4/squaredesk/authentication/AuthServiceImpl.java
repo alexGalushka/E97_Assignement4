@@ -1,12 +1,16 @@
 package cscie97.asn4.squaredesk.authentication;
 
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import cscie97.common.squaredesk.GuidGenerator;
 
 
 /**
@@ -21,34 +25,69 @@ public class AuthServiceImpl implements AuthService
 	private Map<String, Service> serviceMap;
 	private Map<String, AccessToken> accessTokenMap;
 	private Map<String, UserNamePassword> credsForUserMap;
+	private Map<String,List<String[]>> authConfigMap;
+	private Parser parser;
 	private Utils utils;
 	private static AuthServiceImpl _obj;
 	
-	private AuthServiceImpl()
+	private AuthServiceImpl( String fileName ) throws FileNotFoundException
 	{
 		registeredUsersMap = new HashMap<String, RegisteredUser>();
 		entitlementMap = new HashMap<String, Entitlement>();
 		serviceMap = new HashMap<String, Service>(); 
 		accessTokenMap = new HashMap<String, AccessToken>(); 
 		credsForUserMap = new HashMap<String, UserNamePassword>(); 
+		parser = new Parser ( fileName );
+		authConfigMap = loadAuthConfig() ;
 		utils = new Utils();
 	}
 
     /**
      * A special static method to access the single AuthServiceImpl instance
      * @return _obj - type: AuthServiceImpl
+     * @throws FileNotFoundException 
      */
-    public static AuthServiceImpl getInstance() 
+    public static AuthServiceImpl getInstance()
+    {
+        return _obj;
+    }
+    
+    /**
+     * A special static method to access the single AuthServiceImpl instance
+     * @return _obj - type: AuthServiceImpl
+     * @throws FileNotFoundException 
+     */
+    public static AuthServiceImpl getInstance( String fileName ) throws FileNotFoundException 
     {
     	//Checking if the instance is null, then it will create new one and return it
         if (_obj == null)  
         //otherwise it will return previous one.
         {
-            _obj = new AuthServiceImpl();
+            _obj = new AuthServiceImpl( fileName );
         }
         return _obj;
     }
 	
+    /**
+     * method to load Authentication Service configuration settings
+     * @param String : fileName - absolute directory to the .csv config file 
+     * @return Map<String, List<String[]>> : authConfigMap
+     * @throws FileNotFoundException
+     */
+    public Map<String, List<String[]>> loadAuthConfig() throws FileNotFoundException
+    {
+		return authConfigMap = parser.parse();
+    }
+    
+    /**
+     * accessor method for the authentication config map
+     * @return Map<String,List<String[]>>
+     */
+    public Map<String,List<String[]>> getAuthConfig()
+    {
+    	return authConfigMap;
+    }
+    
 	/**
 	 * method to create new registered user and put it in registeredUsersMap; method restricted to admin only
 	 * @param AccessToken : accToken - token to be validated
@@ -56,15 +95,15 @@ public class AuthServiceImpl implements AuthService
 	 * @param String : password - credentials: square desk password 
 	 * @param String : name - registered user's name
 	 * @param String : userId - unique user's ID
+	 * @throws AccessNotAllowedException 
 	 */
-	public void createRegisteredUser( AccessToken accToken, String login , String password, String name, String userId )
+	public void createRegisteredUser( AccessToken accToken, String login , String password, String name, String description, String userId ) throws AccessNotAllowedException
 	{
-		// check the validity
-		
-		// create AccesToken for nonadmin user 
-				
-		String description = "what kind of description";
-		
+
+		if ( !validateAccess( accToken, "create_user" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to create_user at this moment" );
+		}		
 		UserNamePassword credsForUser = new UserNamePassword( userId, login, password); 
 		
 		RegisteredUser newRegUser = new RegisteredUser( userId, name, description, credsForUser);
@@ -78,9 +117,14 @@ public class AuthServiceImpl implements AuthService
 	 * method to update registered within the registeredUsersMap; method restricted to admin only
 	 * @param AccessToken : accToken - token to be validated
 	 * @param String : userId - unique user's ID
+	 * @throws AccessNotAllowedException 
 	 */
-	public void updateRegisteredUser( AccessToken accToken , String id, RegisteredUser regUser )
+	public void updateRegisteredUser( AccessToken accToken , String id, RegisteredUser regUser ) throws AccessNotAllowedException
 	{
+		if ( !validateAccess( accToken, "update_user" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to update_user at this moment" );
+		}		
 		if ( registeredUsersMap.containsKey(id) )
 		{
 			registeredUsersMap.put( id, regUser );
@@ -92,10 +136,14 @@ public class AuthServiceImpl implements AuthService
 	 * method to delete registered user from registeredUsersMap; method restricted to admin only
 	 * @param AccessToken : accToken - token to be validated
 	 * @param String : userId - unique user's ID
+	 * @throws AccessNotAllowedException 
 	 */
-	public void deleteRegisteredUser( AccessToken accToken , String id )
+	public void deleteRegisteredUser( AccessToken accToken , String id ) throws AccessNotAllowedException
 	{
-		// check the validity
+		if ( !validateAccess( accToken, "delete_user" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to delete_user at this moment" );
+		}
 		if ( registeredUsersMap.containsKey( id ) )
 		{
 			registeredUsersMap.remove( id );
@@ -105,13 +153,11 @@ public class AuthServiceImpl implements AuthService
 	
 	/**
 	 * accessor method for the registered user within the registeredUsersMap associated with user's id; method restricted to admin only
-	 * @param AccessToken : accToken - token to be validated
 	 * @param String : userId - unique user's ID
 	 * @return RegisteredUser : regUser 
 	 */
-	public RegisteredUser getRegisterUser ( AccessToken accToken , String id )
+	public RegisteredUser getRegisterUser ( String id )
 	{
-		// check the validity
 		RegisteredUser regUser = null;
 		if ( registeredUsersMap.containsKey( id ) )
 		{
@@ -129,16 +175,22 @@ public class AuthServiceImpl implements AuthService
 	 * @param String : userId - unique user's ID
 	 * @param Entitlement : role - new role to be set
 	 * @param List<Entitlement> : servOrRoleList
+	 * @throws AccessNotAllowedException 
 	 */
-	public void createEntitlement( AccessToken accToken , String userId , Entitlement role , List<Entitlement> servOrRoleList)
+	public void createEntitlement( AccessToken accToken , String userId , Entitlement role , List<Entitlement> servOrRoleList) throws AccessNotAllowedException
 	{
-		// check the validity
+		if ( !validateAccess( accToken, "add_entitlement_to_role" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to add_entitlement_to_role at this moment" );
+		}
 		for ( Entitlement sOrR : servOrRoleList )
 		{
 			role.add(sOrR);
 		}
 		
 		entitlementMap.put(userId, role);
+		RegisteredUser regUser = getRegisterUser( userId );
+		updateRegisteredUser( accToken , userId, regUser );
 	}
 
 	
@@ -147,10 +199,14 @@ public class AuthServiceImpl implements AuthService
 	 * @param AccessToken : accToken - token to be validated
 	 * @param String : userId - unique user's ID
 	 * @param Entitlement : role - new role to be set
+	 * @throws AccessNotAllowedException 
 	 */
-	public void updateEntitlement( AccessToken accToken , String userId , Entitlement role )
+	public void updateEntitlement( AccessToken accToken , String userId , Entitlement role ) throws AccessNotAllowedException
 	{
-		// check the validity
+		if ( !validateAccess( accToken, "update_entitlement_of_role" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to update_entitlement_of_role at this moment" );
+		}
 		if (entitlementMap.containsKey( userId ) )
 		{
 			entitlementMap.put(userId, role);
@@ -162,10 +218,14 @@ public class AuthServiceImpl implements AuthService
 	 * method to delete the entry in the entitlementMap; method restricted to admin only
 	 * @param AccessToken : accToken - token to be validated
 	 * @param String : userId - unique user's ID
+	 * @throws AccessNotAllowedException 
 	 */
-	public void deleteEntitlement( AccessToken accToken , String userId )
+	public void deleteEntitlement( AccessToken accToken , String userId ) throws AccessNotAllowedException
 	{
-		// check the validity
+		if ( !validateAccess( accToken, "delete_entitlement_from_role" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to delete_entitlement_from_role at this moment" );
+		}
 		if (entitlementMap.containsKey( userId ) )
 		{
 			entitlementMap.remove( userId );
@@ -175,13 +235,11 @@ public class AuthServiceImpl implements AuthService
 	
 	/**
 	 * accessor method for the role within the entitlementMap associated with user's id; method restricted to admin only
-	 * @param AccessToken : accToken - token to be validated
 	 * @param String : userId - unique user's ID
 	 * @return Entitlement : role 
 	 */
-	public Entitlement getEntitlement( AccessToken accToken , String userId )
+	public Entitlement getEntitlement( String userId )
 	{
-		// check the validity
 		Entitlement role = null;
 		if (entitlementMap.containsKey( userId ) )
 		{
@@ -198,9 +256,14 @@ public class AuthServiceImpl implements AuthService
 	 * @param String : description
 	 * @param List<Permission> : permiList
 	 * @return Service : service
+	 * @throws AccessNotAllowedException 
 	 */
-	public Service createService ( AccessToken accToken , String id, String name, String description, List<Permission> permiList )
+	public Service createService ( AccessToken accToken , String id, String name, String description, List<Entitlement> permiList ) throws AccessNotAllowedException
 	{
+		if ( !validateAccess( accToken, "define_service" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to define_service at this moment" );
+		}
 		Service service = null;
 		if ( serviceMap.containsKey( id ) )
 		{
@@ -221,9 +284,14 @@ public class AuthServiceImpl implements AuthService
 	 * @param String : name
 	 * @param String : description
 	 * @param List<Permission> : permiList
+	 * @throws AccessNotAllowedException 
 	 */
-	public void updateService ( AccessToken accToken , String id, String name, String description, List<Permission> permiList )
+	public void updateService ( AccessToken accToken , String id, String name, String description, List<Entitlement> permiList ) throws AccessNotAllowedException
 	{
+		if ( !validateAccess( accToken, "update_service" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to update_service at this moment" );
+		}
 		if ( serviceMap.containsKey( id ) )
 		{
 			Service service = new Service ( id, name, description, permiList );
@@ -235,9 +303,14 @@ public class AuthServiceImpl implements AuthService
 	 * deletes Service from the serviceMap; method restricted to admin only
 	 * @param AccessToken : accToken
 	 * @param String : id
+	 * @throws AccessNotAllowedException 
 	 */
-	public void deleteService ( AccessToken accToken , String id )
+	public void deleteService ( AccessToken accToken , String id ) throws AccessNotAllowedException
 	{
+		if ( !validateAccess( accToken, "delete_service" ) )
+		{
+			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to delete_service at this moment" );
+		}
 		if ( serviceMap.containsKey( id ) )
 		{
 			serviceMap.remove( id );
@@ -250,7 +323,7 @@ public class AuthServiceImpl implements AuthService
 	 * @param String : id
 	 * @return Service : service
 	 */
-	public Service getService ( AccessToken accToken , String id )
+	public Service getService ( String id )
 	{
 		Service service = null;
 		if ( serviceMap.containsKey( id ) )
@@ -331,7 +404,7 @@ public class AuthServiceImpl implements AuthService
 	public Boolean validateAccess( AccessToken accToken, String permissionId )
 	{
 		Boolean result = true;
-			
+		// check the token	
 		Date accTokenStartingTime = accToken.getStartingTime();
 		Date timeNow = Calendar.getInstance().getTime();
 		long timeElapsed = timeNow.getTime() - accTokenStartingTime.getTime();
@@ -356,19 +429,22 @@ public class AuthServiceImpl implements AuthService
 			return result;
 		}
 		
-		// switch to permission part
+		// check permission part
 		String userId = accToken.getUserId();
 		Entitlement role = entitlementMap.get( userId );
 		//don't care about the role of the roles
 		List<Entitlement> entList = role.getEntList(); // could be list of Services or List of Roles
 		
-		// assume list of Services
+		// assume list of Permissions
 		result = false;
 		for ( Entitlement entEntry : entList )
 		{
-			if ( entEntry.getId().equals( permissionId ) )
-			{	
-				result = true;
+			if ( entEntry != null)
+			{
+				if ( entEntry.getId().equals( permissionId ) )
+				{	
+					result = true;
+				}
 			}
 		}
 		return result;
@@ -387,7 +463,7 @@ public class AuthServiceImpl implements AuthService
 		//private Map<String, RegisteredUser> registeredUsersMap;
 		
 		Iterator<Entry<String, Service>> entriesServices = serviceMap.entrySet().iterator();
-		Service service;
+		Service service = null;
 		while (entriesServices.hasNext()) 
 		{
 	        Entry<String, Service> thisEntry = entriesServices.next();
@@ -429,4 +505,77 @@ public class AuthServiceImpl implements AuthService
 		result = visitor.getInventoryFromVisitor();
 		return result;
 	}
+	
+
+	/**
+	 * creates administrator bootstrap account
+	 */
+	public RegisteredUser createAdmin()
+	{
+		String login = "admin";
+		String password = "Harvard";
+		// generate admin's guid
+		String guidAdmin = GuidGenerator.getInstance().generateProviderGuid();
+		// set credentials
+		UserNamePassword creds = new UserNamePassword( guidAdmin, login, password );
+		// generate user with above settings
+		RegisteredUser admin = new RegisteredUser( guidAdmin, "Alexander", "Administrator of SquareDesk", creds );
+		
+		credsForUserMap.put( login, creds );
+		registeredUsersMap.put( guidAdmin, admin );
+
+		// create List of entitlements
+		List<Entitlement> entList = createListOfPermissions ( "authentication_service" );
+
+		// create Role
+		Role role = new Role( "authentication_admin_role", "Authentication Admin Role", "Role for Authentication Administrator" ); 
+		
+		
+        for ( Entitlement sOrR : entList )
+		{
+        	role.add(sOrR);
+		}
+		// entitle the user to actually become an administrator	
+	    entitlementMap.put( guidAdmin, role );
+	    admin.addEntitlement( role );
+	    
+	    return admin;
+	}
+	
+	/**
+	 * unrestricted method to create the list of Entitlement out of the auth service config file
+	 * @param serviceId
+	 * @return
+	 */
+	public List<Entitlement> createListOfPermissions ( String serviceId )
+	{
+		List<String[]> entListArray = authConfigMap.get( "define_permission" );
+		List<Entitlement> entList = new LinkedList<Entitlement>();
+		Entitlement ent = null;
+		for  ( String[] entry : entListArray )
+		{
+			if ( entry[0].equals( serviceId) )
+			{
+				ent = new Permission(); 
+				ent.setId( entry[1] );
+				ent.setName( entry[2] );
+				ent.setDescription( entry[3] );
+				entList.add( ent );
+			}
+			
+		}
+		
+		return entList;
+	}
+	
+	/**
+	 * access method for the List of the services formatted as a string array
+	 * @return List<String[]> : entListArray
+	 */
+	public List<String[]> getDefinedServices()
+	{	
+		List<String[]> entListArray = authConfigMap.get( "define_service" );
+		return entListArray;
+	}
+	
 }

@@ -32,7 +32,7 @@ public class User
 		picture = null;
 		contact = null;
 		account = null;
-		guid = GuidGenerator.getInstance().generateProviderGuid();
+		//guid = GuidGenerator.getInstance().generateProviderGuid();
 		profileMap = new HashMap<String, Profile>();
 	}
 	
@@ -45,6 +45,16 @@ public class User
 	public String getGuid ()
 	{
 		return this.guid;
+	}
+	
+	/**
+	 * mutator method for guid attribute.
+	 *
+	 * @return String
+	 */
+	public void setGuid ( String guid )
+	{
+		 this.guid = guid;
 	}
 	
 	/**

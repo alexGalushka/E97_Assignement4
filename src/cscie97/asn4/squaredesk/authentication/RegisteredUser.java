@@ -36,10 +36,9 @@ public class RegisteredUser implements Visitable
 	/**
 	 * adds entitlement to the list of entitlement
 	 * Admin restricted method
-	 * @param AccessToken : accToken
 	 * @param Permission : permList
 	 */
-	public void addEntitlement( AccessToken accToken, Entitlement ent )
+	public void addEntitlement( Entitlement ent )
 	{
 		// authImpl.validateAccess( accToken, <entitlement string> ).
 		if ( !entiList.contains( ent ) )
@@ -51,10 +50,9 @@ public class RegisteredUser implements Visitable
 	/**
 	 * removes entitlement from the list of entitlement
 	 * Admin restricted method
-	 * @param AccessToken : accToken
 	 * @param Permission : permList
 	 */
-	public void removeEntitlement( AccessToken accToken, Entitlement ent)
+	public void removeEntitlement( Entitlement ent )
 	{
 		// authImpl.validateAccess( accToken, <entitlement string> ).
 		if ( entiList.contains( ent ) )

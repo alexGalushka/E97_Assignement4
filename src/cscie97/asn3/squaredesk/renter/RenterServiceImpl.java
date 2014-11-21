@@ -146,6 +146,8 @@ public class RenterServiceImpl implements RenterService
 			throw new AccessNotAllowedException( "User with ID "+accToken.getUserId()+" not allowed to create_renter at this moment" );
 		}
 		User user = new User();
+		// set renter user with guid passed in from the Registered User's AccessToken
+		user.setGuid( accToken.getUserId() );
 		String userId = user.getGuid();
 		profile.setGuid( userId );
 		user.setAccount( profile.getAccount() );
