@@ -71,7 +71,7 @@ public class TestDriver
     {
 		
 		// .csv config file name, has to be passed via command line as a parameter
-		 String fileName = "C:/Users/apgalush/Documents/Personal/Harvard/Falls2014/E97_SoftwareDesign/assign4/authentication2.csv"; //args[0];
+		 String fileName = "C:/Users/apgalush/Documents/Personal/Harvard/Falls2014/E97_SoftwareDesign/assign4/authentication.csv"; //args[0];
 
 		 AuthService authService = null;
 		 
@@ -235,7 +235,7 @@ public class TestDriver
 			System.out.println ( message );
 		}
 		
-		// Entitle the provider user
+		// Entitle the renter user
 		
 		String[] roleArrayRenter = authService.getDefinedRole( "renter_role" );
 		Entitlement renterRole = new Role ( roleArrayRenter[0], roleArrayRenter[1], roleArrayRenter[2] );

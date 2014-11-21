@@ -34,7 +34,7 @@ public class AuthServiceVisitor implements Visitor
 		if ( regUser.getAccToken() != null )
 		{
 			inventory += "      TokenId: "+regUser.getAccToken().getTokenId()+"\n";
-			inventory += "      Time Stamp: "+regUser.getAccToken().getStartingTime()+"\n";
+			inventory += "      Time Stamp: "+regUser.getAccToken().getTimeStamp()+"\n";
 			inventory += "      Status: "+regUser.getAccToken().getStatus()+"\n";
 		}
 	}

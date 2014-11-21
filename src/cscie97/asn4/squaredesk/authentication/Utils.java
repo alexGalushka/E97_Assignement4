@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 public class Utils
 {
 
-	public  String hashPassword( String passwordToHash )
+	public String hashPassword( String passwordToHash )
 	{
 		//****************************************//
 		// Below code snippet has been borrowed from
@@ -41,17 +41,4 @@ public class Utils
 	   //****************************************//
    }
 	
-  /*
-   * hash password Test function
-   * 	
-  public void testFunction ( String password )
-  {
-	  String generatedPassword = "";
-	  for (int i = 0; i<5; i++)
-	  {
-		  generatedPassword = hashPassword ( password );
-		  System.out.println(generatedPassword);
-	  }
-  }
-  */
 }

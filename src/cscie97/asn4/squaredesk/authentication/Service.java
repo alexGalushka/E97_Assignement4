@@ -10,7 +10,7 @@ public class Service implements Visitable
 	private String name;
 	private String description;
 
-	List<Entitlement> permiList;
+	private List<Entitlement> permiList;
 	
 	public Service()
 	{

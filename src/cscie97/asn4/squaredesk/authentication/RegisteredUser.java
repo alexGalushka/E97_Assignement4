@@ -8,9 +8,9 @@ public class RegisteredUser implements Visitable
 	private String id;
 	private String name;
 
-	List<Entitlement> entiList;
-	AccessToken accToken;
-	UserNamePassword creds;
+	private List<Entitlement> entiList;
+	private AccessToken accToken;
+	private UserNamePassword creds;
 	
 	public RegisteredUser()
 	{

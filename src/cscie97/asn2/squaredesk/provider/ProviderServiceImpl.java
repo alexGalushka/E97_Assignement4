@@ -14,7 +14,6 @@ import cscie97.asn4.squaredesk.authentication.AccessNotAllowedException;
 import cscie97.asn4.squaredesk.authentication.AccessToken;
 import cscie97.asn4.squaredesk.authentication.AuthService;
 import cscie97.asn4.squaredesk.authentication.AuthServiceImpl;
-import cscie97.common.squaredesk.AccessException;
 import cscie97.common.squaredesk.Profile;
 import cscie97.common.squaredesk.ProfileAlreadyExistsException;
 import cscie97.common.squaredesk.ProfileNotFoundException;
@@ -71,10 +70,10 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	 *
 	 * @param accToken the auth token
 	 * @param provider the provider
-	 * @throws ProfileAlreadyExistsException 
-	 * @throws AccessNotAllowedException 
+	 * @throws ProfileAlreadyExistsException if profile already exists
+	 * @throws AccessNotAllowedException if access is not allowed 
 	 * @throws ProviderAlreadyExistsException the provider already exists exception
-	 * @throws ProfileNotFoundException 
+	 * @throws ProfileNotFoundException  if profile is not find
 	 */
 	public String createProvider ( AccessToken accToken, Profile  profile ) throws ProfileAlreadyExistsException, AccessNotAllowedException 
 	{
@@ -121,7 +120,7 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	
 	/**
 	 * Returns whole list of providers.
-	 * @return List<OfficeProvider>
+	 * @return List of Profiles 
 	 */
 	public List<Profile> getProviderList ()
 	{
@@ -147,10 +146,9 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	/**
 	 * Updates the provider, new Provider instance has to be passed in.
 	 * If providerId not found, throws ProfileNotFoundException.
-	 * @param providerId the provider id
 	 * @param provider the provider
 	 * @throws ProfileNotFoundException the provider not found exception
-	 * @throws AccessNotAllowedException 
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */
 	public void updateProvider ( AccessToken accToken, Profile provider ) throws ProfileNotFoundException, AccessNotAllowedException
 	{
@@ -176,11 +174,11 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	/**
 	 * Deleted the provider.
 	 * If providerId not found, throws ProfileNotFoundException.
-	 * @param AccessToken accToken
-	 * @param providerId the provider id
+	 * @param accToken - access token
+	 * @param providerId - provider id
 	 * @throws ProfileNotFoundException the provider not found exception
-	 * @throws OfficeSpaceNotFoundException 
-	 * @throws AccessNotAllowedException 
+	 * @throws OfficeSpaceNotFoundException if office space is not found
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */
 	public void deleteProvider ( AccessToken accToken, String providerId ) throws ProfileNotFoundException, OfficeSpaceNotFoundException, AccessNotAllowedException
 	{
@@ -309,14 +307,14 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	 * Rating Field is initialized here.
 	 * Note: officeSpaceId has to be generated first! Check for officeSpaceIds and providerId in the id buckets,
 	 * if this check fails throw the 
+	 * @param accToken access token
 	 * @param officeSpace the office space
-	 * @param guid the guid of the OfficeSpace
+	 * @param providerId provider id
 	 * @throws OfficeSpaceAlreadyExistException the office space already exist exception
-	 * @throws AccessException the access exception
-	 * @throws AccessNotAllowedException 
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */ 
 	public void createOfficeSpace ( AccessToken accToken, OfficeSpace officeSpace, String providerId )
-			                        throws OfficeSpaceAlreadyExistException, AccessException, AccessNotAllowedException
+			                        throws OfficeSpaceAlreadyExistException, AccessNotAllowedException
 	{
 		if ( !authService.validateAccess( accToken, "create_office_space" ) )
 		{

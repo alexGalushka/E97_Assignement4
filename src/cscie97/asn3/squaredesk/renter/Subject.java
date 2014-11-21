@@ -9,11 +9,13 @@ public interface Subject
 {
     /**
      * Observer's pattern method to add Observer to the list of Observers
+     * @param observer - Observer
      */
 	public void registerObserver(Observer observer);
 
     /**
      * Observer's pattern method to remove Observer from the list of Observers
+     * @param observer - Observer
      */
 	public void removeObserver(Observer observer);
 

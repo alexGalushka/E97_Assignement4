@@ -10,7 +10,7 @@ public class AccessToken
 	private String id;
 	// set to TRUE upon token creation, setting it to FALSE invalidates token
 	private Boolean status; 
-	private Date startingTime; 
+	private Date timeStamp; 
 	
 	private String userId; // added for optimization and flexibility
 	
@@ -18,7 +18,7 @@ public class AccessToken
 	{
 		this.id = GuidGenerator.getInstance().generateProviderGuid();
 		this.status = true;
-		startingTime = Calendar.getInstance().getTime();
+		timeStamp = Calendar.getInstance().getTime();
 	}
 
 	
@@ -33,11 +33,11 @@ public class AccessToken
 	
 	/**
 	 * accessor method
-	 * @return Date : startingTime
+	 * @return Date : timeStamp
 	 */
-	public Date getStartingTime() 
+	public Date getTimeStamp() 
 	{
-		return startingTime;
+		return timeStamp;
 	}
 	
 	/**
@@ -78,10 +78,10 @@ public class AccessToken
 
 	/**
 	 * mutator method
-	 * @param startingTime to set
+	 * @param timeStamp to set
 	 */
-	public void setStartingTime (Date startingTime)
+	public void setTimeStamp (Date timeStamp)
 	{
-		this.startingTime = startingTime;
+		this.timeStamp = timeStamp;
 	}
 }

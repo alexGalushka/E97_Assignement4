@@ -26,24 +26,24 @@ public interface ProviderService
 	 * Returns provider per passed in providerId,
 	 * if there is no match – throws ProfileNotFoundException .
 	 * @param providerId the provider id
-	 * @return the provider
+	 * @return profile, the provider
 	 * @throws ProfileNotFoundException the provider not found exception
 	 */
 	public Profile getProvider( String providerId ) throws ProfileNotFoundException;
 	
 	/**
 	 * Returns whole list of providers.
-	 * @return List<OfficeProvider>
+	 * @return List of OfficeProvider
 	 */
 	public List<Profile> getProviderList ();
 	
 	/**
 	 * Updates the provider, new Provider instance has to be passed in.
 	 * If providerId not found, throws ProfileNotFoundException.
-	 * @param providerId the provider id
-	 * @param provider the provider
+	 * @param accToken - access token
+	 * @param provider - provider
 	 * @throws ProfileNotFoundException the provider not found exception
-	 * @throws AccessNotAllowedException 
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */
 	public void updateProvider ( AccessToken accToken, Profile provider ) throws ProfileNotFoundException, AccessNotAllowedException;
 	
@@ -53,8 +53,8 @@ public interface ProviderService
 	 * @param AccessToken accToken
 	 * @param providerId the provider id
 	 * @throws ProfileNotFoundException the provider not found exception
-	 * @throws OfficeSpaceNotFoundException 
-	 * @throws AccessNotAllowedException 
+	 * @throws OfficeSpaceNotFoundException  if office space is not found
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */
 	public void deleteProvider ( AccessToken accToken, String providerId ) throws ProfileNotFoundException, OfficeSpaceNotFoundException, AccessNotAllowedException;
 	
@@ -86,9 +86,9 @@ public interface ProviderService
 	/**
 	 * Gets the rating list.
 	 * @param providerId the provider id
-	 * @return the rating list
+	 * @return rating list
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
-	 * @throws ProfileNotFoundException 
+	 * @throws ProfileNotFoundException if profile is not found
 	 */
 	public List<Rating> getRatingList ( String providerId ) throws OfficeSpaceNotFoundException, ProfileNotFoundException;
 	
@@ -98,8 +98,9 @@ public interface ProviderService
 	 * Rating Field is initialized here.
 	 * Note: officeSpaceId has to be generated first! Check for officeSpaceIds and providerId in the id buckets,
 	 * if this check fails throw the 
+	 * @param accToken - access token
 	 * @param officeSpace the office space
-	 * @param guid the guid of the OfficeSpace
+	 * @param providerId - provider id
 	 * @throws OfficeSpaceAlreadyExistException the office space already exist exception
 	 * @throws AccessException the access exception
 	 * @throws AccessNotAllowedException 
@@ -118,14 +119,12 @@ public interface ProviderService
 	
 	/**
 	 * Gets the office space list.
-	 *
 	 * @return all values (office spaces) from officeSpaceMap
 	 */
 	public List<OfficeSpace> getOfficeSpaceList ();
 	
 	/**
 	 * Gets the office space guid list.
-	 *
 	 * @return List<String>
 	 */
 	public List<String> getOfficeSpaceGuidList ();
@@ -133,12 +132,10 @@ public interface ProviderService
 	/**
 	 * updates particular office space in the office space map with a new office space based on guid passed in
 	 * if the guid not found in the map, it throws OfficeSpaceNotFoundException exception.
-	 * @param AccessToken accTokenn
-	 * @param guid the guid
-	 * @param officeSpaceId the office space id
+	 * @param accToken - access token
 	 * @param updatedOffice the updated office
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
-	 * @throws AccessNotAllowedException 
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */
 	public void updateOfficeSpace ( AccessToken accToken, String providerId,
 			                        OfficeSpace updatedOffice) throws OfficeSpaceNotFoundException, AccessNotAllowedException;
@@ -146,12 +143,11 @@ public interface ProviderService
 	/**
 	 * removed particular office space from the office space map based on guid passed in
 	 * if the guid not found in the map, it throws OfficeSpaceNotFoundException exception.
-	 * @param AccessToken accToken
-	 * @param guid the guid
-	 * @param officeSpaceId the office space id
-	 * @param updatedOffice the updated office
+	 * @param accToken - access token 
+	 * @param providerId - provider id
+	 * @param officeSpaceId - office space id
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
-	 * @throws AccessNotAllowedException 
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */
 	public void removeOfficeSpace ( AccessToken accToken, String providerId,
                                     String officeSpaceId ) throws OfficeSpaceNotFoundException, AccessNotAllowedException;	
@@ -161,10 +157,10 @@ public interface ProviderService
 	 * if the office space id is not found - OfficeSpaceNotFoundException is thrown;
 	 * if the rater already provided his/her rating - RatingAlreadyExistsException is thrown.
 	 *
-	 * @param authToken the auth token
-	 * @param renterId the renter id
-	 * @param officeSpaceId the office space id
-	 * @param rating the rating
+	 * @param authToken - the auth token
+	 * @param renterId - the renter id
+	 * @param officeSpaceId - the office space id
+	 * @param rating - the rating
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 * @throws RatingAlreadyExistsException the rating already exists exception
 	 */
@@ -190,9 +186,9 @@ public interface ProviderService
 	 * Returns the list all Ratings correspondent to office space the officeSpaceMap,
 	 * if the office space id is not found - OfficeSpaceNotFoundException is thrown.
 	 *
-	 * @param authToken the auth token
+	 * @param authToken - the auth token
 	 * @param officeSpaceId the office space id
-	 * @return List<Rating>
+	 * @return list of ratings
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 */
 	public List<Rating> getOfficeSpaceRatingList  ( String authToken, String officeSpaceId ) throws OfficeSpaceNotFoundException;
@@ -200,11 +196,13 @@ public interface ProviderService
 	// artifacts required for Subject for Observer pattern
     /**
      * Observer's pattern method to add Observer to the list of Observers
+     * observer - Observer
      */
 	public void registerObserver(Observer observer);
 
     /**
      * Observer's pattern method to remove Observer from the list of Observers
+     * observer - Observer
      */
 	public void removeObserver(Observer observer);
 
