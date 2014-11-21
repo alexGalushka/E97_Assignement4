@@ -32,8 +32,9 @@ public interface AuthService
 	 * @param String : description - registered user's description
 	 * @param String : userId - unique user's ID
 	 * @throws AccessNotAllowedException 
+	 * @return RegisteredUser : newRegUser
 	 */
-    public void createRegisteredUser( AccessToken accToken, String login , String password, String name, String description, String userId ) throws AccessNotAllowedException;
+    public RegisteredUser createRegisteredUser( AccessToken accToken, String login , String password, String name, String description, String userId ) throws AccessNotAllowedException;
 	
 	/**
 	 * method to update registered within the registeredUsersMap; method restricted to admin only
@@ -149,9 +150,9 @@ public interface AuthService
 	 * this method considered to be the end point of user's session
 	 * @param AccessToken : accToken
 	 * @param String : login
-	 * @throws LoginFailedException
+	 * @throws LogoutFailedException 
 	 */
-	public void logout( AccessToken accToken, String login ) throws LoginFailedException;
+	public void logout( AccessToken accToken, String login ) throws LogoutFailedException;
 	
 	/**
 	 * method to validate calls made by user to certain API Services' methods
@@ -185,4 +186,30 @@ public interface AuthService
 	 * @return List<String[]> : entListArray
 	 */
 	public List<String[]> getDefinedServices();
+	
+	/**
+	 * access method for the List of the credentials formatted as a string array
+	 * @return List<String[]> : entListArray
+	 */
+	public List<String[]> credListArray();
+	
+	/**
+	 * retrieves credentials from the Auth Service config
+	 * @param userCsvId
+	 * @return String[] : result
+	 */
+	public String[] getCredentials ( String userCsvId );
+	
+	/**
+	 * retrieves defined role from the Auth Service config
+	 * @param userCsvRole
+	 * @return String[] : result
+	 */
+	public String[] getDefinedRole ( String userCsvRole );
+	
+	/**
+	 * access method for the List of the roles formatted as a string array
+	 * @return List<String[]> : rolesListArray
+	 */
+	public List<String[]> rolesListArray();
 }

@@ -96,8 +96,9 @@ public class AuthServiceImpl implements AuthService
 	 * @param String : name - registered user's name
 	 * @param String : userId - unique user's ID
 	 * @throws AccessNotAllowedException 
+	 * @return RegisteredUser : newRegUser;
 	 */
-	public void createRegisteredUser( AccessToken accToken, String login , String password, String name, String description, String userId ) throws AccessNotAllowedException
+	public RegisteredUser createRegisteredUser( AccessToken accToken, String login , String password, String name, String description, String userId ) throws AccessNotAllowedException
 	{
 
 		if ( !validateAccess( accToken, "create_user" ) )
@@ -110,6 +111,7 @@ public class AuthServiceImpl implements AuthService
 		
 		credsForUserMap.put( login, credsForUser );
 		registeredUsersMap.put( userId, newRegUser );
+		return newRegUser;
 	}
 
 
@@ -377,19 +379,19 @@ public class AuthServiceImpl implements AuthService
 	 * @param String : login
 	 * @throws LoginFailedException
 	 */
-	public void logout( AccessToken accToken, String login ) throws LoginFailedException
+	public void logout( AccessToken accToken, String login ) throws LogoutFailedException
 	{
 		if ( !credsForUserMap.containsKey(login) )
 		{
 			String message = "login is incorrect";
-			throw new LoginFailedException( message );
+			throw new LogoutFailedException( message );
 		}
 
 		String accessTokenId = accToken.getTokenId();
 		if ( !accessTokenMap.containsKey( accessTokenId ) )
 		{
 			String message = "access token is invalid";
-			throw new LoginFailedException( message );
+			throw new LogoutFailedException( message );
 		}
 		
 		accessTokenMap.remove( accessTokenId ); //invalidate token
@@ -512,8 +514,10 @@ public class AuthServiceImpl implements AuthService
 	 */
 	public RegisteredUser createAdmin()
 	{
-		String login = "admin";
-		String password = "Harvard";
+		String[] loginPswd = getCredentials( "authentication_admin_user" );
+		String login = loginPswd[0];
+		String password = loginPswd[1];
+
 		// generate admin's guid
 		String guidAdmin = GuidGenerator.getInstance().generateProviderGuid();
 		// set credentials
@@ -530,12 +534,12 @@ public class AuthServiceImpl implements AuthService
 		// create Role
 		Role role = new Role( "authentication_admin_role", "Authentication Admin Role", "Role for Authentication Administrator" ); 
 		
-		
+		// entitle the user to actually become an administrator
         for ( Entitlement sOrR : entList )
 		{
         	role.add(sOrR);
 		}
-		// entitle the user to actually become an administrator	
+			
 	    entitlementMap.put( guidAdmin, role );
 	    admin.addEntitlement( role );
 	    
@@ -568,6 +572,7 @@ public class AuthServiceImpl implements AuthService
 		return entList;
 	}
 	
+	
 	/**
 	 * access method for the List of the services formatted as a string array
 	 * @return List<String[]> : entListArray
@@ -578,4 +583,69 @@ public class AuthServiceImpl implements AuthService
 		return entListArray;
 	}
 	
+	/**
+	 * access method for the List of the credentials formatted as a string array
+	 * @return List<String[]> : entListArray
+	 */
+	public List<String[]> credListArray()
+	{	
+		List<String[]> credListArray = authConfigMap.get( "add_credential" );
+		return credListArray;
+	}
+	
+	/**
+	 * retrieves credentials from the Auth Service config
+	 * @param userCsvId
+	 * @return String[] : result
+	 */
+	public String[] getCredentials ( String userCsvId )
+	{
+		String result[] = new String[2];
+		result[0] = "";
+		result[1] = "";
+		List<String[]> credList = credListArray();
+		for  ( String[] entry : credList )
+		{
+			if ( entry[0].equals( userCsvId ) )
+			{
+				result[0] = entry[1];
+				result[1] = entry[2];
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * retrieves defined role from the Auth Service config
+	 * @param userCsvRole
+	 * @return String[] : result
+	 */
+	public String[] getDefinedRole ( String userCsvRole )
+	{
+		String result[] = new String[3];
+		result[0] = "";
+		result[1] = "";
+		result[2] = "";
+		List<String[]> credList = rolesListArray();
+		for  ( String[] entry : credList )
+		{
+			if ( entry[0].equals( userCsvRole ) )
+			{
+				result[0] = entry[0];
+				result[1] = entry[1];
+				result[2] = entry[2];
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * access method for the List of the roles formatted as a string array
+	 * @return List<String[]> : rolesListArray
+	 */
+	public List<String[]> rolesListArray()
+	{	
+		List<String[]> rolesListArray = authConfigMap.get( "define_role" );
+		return rolesListArray;
+	}
 }

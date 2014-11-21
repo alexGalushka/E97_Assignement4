@@ -25,7 +25,7 @@ public class Importer implements Observer
 	
 	public Importer(ProviderService providerService)
 	{
-		provUserList = providerService.getProviderList( "" );
+		provUserList = providerService.getProviderList();
 		// datesForRentMap = new HashMap<String, String[]>();
 		locationPredicate = new Predicate ("has_lat_long");
 		featurePredicate = new Predicate ("has_feature");

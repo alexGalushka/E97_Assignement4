@@ -137,7 +137,7 @@ public class SearchEngine
 			{
 				id =  tr.getSubject().getIdentifier();
 				idArray = id.split("&");
-				tempOfficeSpaces.add( providerService.getOfficeSpace( "" , idArray[1] ) ); // second element of Array is officeSpace ID
+				tempOfficeSpaces.add( providerService.getOfficeSpace( idArray[1] ) ); // second element of Array is officeSpace ID
 			}
 		}
 		catch (OfficeSpaceNotFoundException e)

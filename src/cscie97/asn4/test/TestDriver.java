@@ -16,6 +16,7 @@ import cscie97.common.squaredesk.AccessException;
 import cscie97.common.squaredesk.ContactInfo;
 import cscie97.common.squaredesk.Address;
 import cscie97.common.squaredesk.Gender;
+import cscie97.common.squaredesk.GuidGenerator;
 import cscie97.common.squaredesk.Image;
 import cscie97.common.squaredesk.Location;
 import cscie97.common.squaredesk.Features;
@@ -46,11 +47,10 @@ import cscie97.asn4.squaredesk.authentication.AuthService;
 import cscie97.asn4.squaredesk.authentication.AuthServiceImpl;
 import cscie97.asn4.squaredesk.authentication.Entitlement;
 import cscie97.asn4.squaredesk.authentication.LoginFailedException;
-import cscie97.asn4.squaredesk.authentication.Parser;
-import cscie97.asn4.squaredesk.authentication.Permission;
+import cscie97.asn4.squaredesk.authentication.LogoutFailedException;
 import cscie97.asn4.squaredesk.authentication.RegisteredUser;
-import cscie97.asn4.squaredesk.authentication.Service;
-import cscie97.asn4.squaredesk.authentication.UserNamePassword;
+import cscie97.asn4.squaredesk.authentication.Role;
+
 
 
 /**
@@ -91,8 +91,6 @@ public class TestDriver
 			System.out.println ( message );
 		}
 		
-		// get the AuthService config
-		Map<String,List<String[]>> authServiceConfigMap = authService.getAuthConfig();
 		
 		// create and admin
 		RegisteredUser admin = authService.createAdmin();
@@ -145,6 +143,145 @@ public class TestDriver
 		}
 		
 		// it's time to create the registered users
+		
+		//////// REGISTERED PROVIDER ////////
+		String[] loginPswd = authService.getCredentials( "provider_user" );
+		String loginProv = loginPswd[0];
+		String passwordProv = loginPswd[1];
+		String guidProvider = GuidGenerator.getInstance().generateProviderGuid();
+		RegisteredUser regProvider = null;
+		// admin creates provider
+		try 
+		{
+			regProvider = authService.createRegisteredUser( adminAccessToken, loginProv , passwordProv, "Fred", "Office Space Provider of SquareDesk", guidProvider );
+		} 
+		catch (AccessNotAllowedException e) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			String message = "Provider User " +guidProvider+ " has been created...";
+			System.out.println ( message );
+		}
+		
+		// Entitle the provider user
+		
+		String[] roleArray = authService.getDefinedRole( "provider_role" );
+		Entitlement provRole = new Role ( roleArray[0], roleArray[1], roleArray[2] );
+
+		// create List of permissions
+		List<Entitlement> permList = authService.createListOfPermissions ( "provider_api_service" );
+		
+		try 
+		{
+			authService.createEntitlement( adminAccessToken, guidProvider, provRole, permList );
+		} 
+		catch (AccessNotAllowedException e)
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			String message = "Provider User " +guidProvider+ " has been entitled by admin with provider_service permissions...";
+			System.out.println ( message );
+		}
+		
+		// let provider user Fred to login into the SquareDesk and start the session
+		AccessToken providerAccessToken = null;
+		try
+		{
+			providerAccessToken = authService.login( "fred", "Harvard1" ); //get an provider accessToken
+			regProvider.setAccToken( providerAccessToken );
+			authService.updateRegisteredUser( adminAccessToken, regProvider.getId(), regProvider);
+		} 
+		catch (LoginFailedException e1)
+		{
+			String errorMessage = "Login has failed. Please check provider's Credentials.";
+			System.out.println ( errorMessage );
+		} 
+		catch (AccessNotAllowedException e) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			String message = "Provider has logged in. Provider's Session has been started.";
+			System.out.println ( message );
+		}
+		
+		//////// REGISTERED RENTER ////////
+		String[] loginPswdRenter = authService.getCredentials( "renter_user" );
+		String loginRenter = loginPswdRenter[0];
+		String passwordRenter = loginPswdRenter[1];
+		String guidRenter = GuidGenerator.getInstance().generateProviderGuid();
+		RegisteredUser regRenter = null;
+		// admin creates Renter
+		try 
+		{
+			regRenter = authService.createRegisteredUser( adminAccessToken, loginRenter , passwordRenter, "Katie", "Office Space Renter of SquareDesk", guidRenter );
+		} 
+		catch (AccessNotAllowedException e) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			String message = "Renter User " +guidRenter+ " has been created...";
+			System.out.println ( message );
+		}
+		
+		// Entitle the provider user
+		
+		String[] roleArrayRenter = authService.getDefinedRole( "renter_role" );
+		Entitlement renterRole = new Role ( roleArrayRenter[0], roleArrayRenter[1], roleArrayRenter[2] );
+
+		// create List of permissions
+		List<Entitlement> permListRenter = authService.createListOfPermissions ( "renter_service" );
+		
+		try 
+		{
+			authService.createEntitlement( adminAccessToken, guidRenter, renterRole, permListRenter );
+		} 
+		catch (AccessNotAllowedException e)
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			String message = "Renter User " +guidRenter+ " has been entitled by admin with renter_service permissions...";
+			System.out.println ( message );
+		}
+		
+		// let Renter user Katie to login into the SquareDesk and start the session
+		AccessToken renterAccessToken = null;
+		try
+		{
+			renterAccessToken = authService.login( "katie", "Harvard2" ); //get an Renter accessToken
+			regRenter.setAccToken( renterAccessToken );
+			authService.updateRegisteredUser( adminAccessToken, regRenter.getId(), regRenter);
+		} 
+		catch (LoginFailedException e1)
+		{
+			String errorMessage = "Login has failed. Please check renter's Credentials.";
+			System.out.println ( errorMessage );
+		} 
+		catch (AccessNotAllowedException e) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			String message = "Renter has logged in. Renter's Session has been started.";
+			System.out.println ( message );
+		}
+		
 		
 		System.out.println ( authService.getInventory() );
 		
@@ -276,7 +413,7 @@ public class TestDriver
 
 		// *********************** //
 		
-		/*
+
 		// create a new Provider with unique guid
 		
 		uutOfficeProvider = new Provider();
@@ -288,10 +425,27 @@ public class TestDriver
 		// Instantiate ProviderService object
 		uutOfficeProviderService = ProviderServiceImpl.getInstance();
 		
-		String providerId = uutOfficeProviderService.createProvider( "", uutOfficeProvider );
+		String providerId = "";
+		try
+		{
+			providerId = uutOfficeProviderService.createProvider( providerAccessToken, uutOfficeProvider );
+		} 
+		catch (AccessNotAllowedException e4) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
 		uutOfficeSpace.setProviderId( providerId ); 
 		
-		uutOfficeProviderService.createOfficeSpace( "", uutOfficeSpace, providerId );
+		try
+		{
+			uutOfficeProviderService.createOfficeSpace( providerAccessToken, uutOfficeSpace, providerId );
+		} 
+		catch (AccessNotAllowedException e3)
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
 		
 		HashMap<String, OfficeSpace> uutOfficeSpaceMap = new HashMap<String, OfficeSpace>();
 		uutOfficeSpaceMap.put( providerId, uutOfficeSpace );
@@ -374,8 +528,16 @@ public class TestDriver
         // GET RenterServiceImpl instance
         uutOfficeRenterService = RenterServiceImpl.getInstance();
         
-        String renterId;
-        renterId = uutOfficeRenterService.createRenter ( "" , uutRenter );
+        String renterId = "";
+        try
+        {
+			renterId = uutOfficeRenterService.createRenter ( renterAccessToken , uutRenter );
+		} 
+        catch (AccessNotAllowedException e2) 
+        {
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
         
         System.out.println ( "***RENTER SERVICE TESTING***" );
         // TEST
@@ -386,7 +548,7 @@ public class TestDriver
         System.out.println ( "\n--Testing Booking"  );
         try
         {
-        	testStatus = uutOfficeRenterService.bookOfficeSpace("", uutRenter, rate, PaymentStatus.DUE);
+        	testStatus = uutOfficeRenterService.bookOfficeSpace( renterAccessToken, uutRenter, rate, PaymentStatus.DUE);
         	if (!testStatus)
         	{
         		System.out.println ( "As expected Renter Katie's criteria doesn't match information provided by Office Space provider Fred\n"
@@ -398,6 +560,11 @@ public class TestDriver
         {
 
 			String errorMessage = "ERROR: Booking Exception has occurred";
+			System.out.println ( errorMessage );
+		} 
+        catch (AccessNotAllowedException e)
+        {
+			String errorMessage = "ERROR: Access is not allowed";
 			System.out.println ( errorMessage );
 		}
         
@@ -415,23 +582,28 @@ public class TestDriver
 		
 		try 
 		{
-			uutRenter =  uutOfficeRenterService.getRenter("", renterId);
+			uutRenter =  uutOfficeRenterService.getRenter( renterId );
 			uutCriteria = uutRenter.getCriteria();
 			uutCriteria.setPreferredFeatures(uutFeaturesList);
 			uutCriteria.setLocation(uutLocation);
 			uutRenter.setCriteria(uutCriteria);
-			uutOfficeRenterService.updateRenter("", uutRenter);
+			uutOfficeRenterService.updateRenter( renterAccessToken, uutRenter);
 		} 
 		catch (ProfileNotFoundException e1)
 		{
 			
 			String errorMessage = "ERROR: Booking Exception has occurred";
 			System.out.println ( errorMessage );
+		} 
+		catch (AccessNotAllowedException e)
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
 		}
 		
         try
         {
-        	testStatus = uutOfficeRenterService.bookOfficeSpace("", uutRenter, rate, PaymentStatus.DUE);
+        	testStatus = uutOfficeRenterService.bookOfficeSpace( renterAccessToken, uutRenter, rate, PaymentStatus.DUE);
         	if (!testStatus)
         	{
         		System.out.println ( "As expected Renter Katie's criteria doesn't match information provided by Office Space provider Fred\n"
@@ -462,6 +634,11 @@ public class TestDriver
 
 			String errorMessage = "ERROR: Booking Exception has occurred";
 			System.out.println ( errorMessage );
+		} 
+        catch (AccessNotAllowedException e)
+        {
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
 		}
 		
 		// Now let's change the provider information (violating search criteria), to make sure that synchronization between ProviderService implementation
@@ -478,11 +655,16 @@ public class TestDriver
 		
 		try 
 		{
-			uutOfficeProviderService.updateOfficeSpace("", providerId, uutOfficeSpace);
+			uutOfficeProviderService.updateOfficeSpace( providerAccessToken, providerId, uutOfficeSpace);
 		} 
 		catch (OfficeSpaceNotFoundException e1)
 		{
 			String errorMessage = "\nERROR: Booking Exception has occurred";
+			System.out.println ( errorMessage );
+		} 
+		catch (AccessNotAllowedException e) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
 			System.out.println ( errorMessage );
 		}
 		finally
@@ -493,11 +675,16 @@ public class TestDriver
 		boolean testStatus1 = true;
 		try 
 		{
-			testStatus1 = uutOfficeRenterService.bookOfficeSpace("", uutRenter, rate, PaymentStatus.DUE);
+			testStatus1 = uutOfficeRenterService.bookOfficeSpace( renterAccessToken, uutRenter, rate, PaymentStatus.DUE);
 		} 
 		catch ( BookingException e1 ) 
 		{
 			String errorMessage = "\nERROR: Booking Exception has occurred";
+			System.out.println ( errorMessage );
+		}
+		catch (AccessNotAllowedException e)
+		{
+			String errorMessage = "ERROR: Access is not allowed";
 			System.out.println ( errorMessage );
 		}
 		finally
@@ -523,7 +710,7 @@ public class TestDriver
 		Profile provider = null;
 		try
 		{
-			provider = uutOfficeProviderService.getProvider( "auth" , providerId);
+			provider = uutOfficeProviderService.getProvider( providerId );
 		}
 		catch (ProfileNotFoundException e)
 		{
@@ -606,7 +793,7 @@ public class TestDriver
 			Rating uutProviderRating = new Rating( authorsNameProvider, commentProvider, dateProvider, starsProvider );
 			try
 			{
-				uutOfficeProviderService.rateProvider( "auth", providerId, "77777777", uutProviderRating);
+				uutOfficeProviderService.rateProvider( providerId, "77777777", uutProviderRating);
 			} 
 			catch (RatingAlreadyExistsException e)
 			{
@@ -621,7 +808,7 @@ public class TestDriver
 				System.out.println ( "\nWho has recently rated this provider?" );
 				try
 				{
-					Profile tempProvider = uutOfficeProviderService.getProvider("auth", providerId);
+					Profile tempProvider = uutOfficeProviderService.getProvider( providerId );
 					
 					for (Rating r : tempProvider.getAllRatings())
 					{
@@ -638,7 +825,73 @@ public class TestDriver
 				}
 			}
 		}
-		*/
+		
+		// Authentication Service Negative test cases
+		
+		System.out.println ( "\n***AUTHENTICATION SERVICE NEGATIVE TEST CASES***" );
+		
+		// try to update the office space passing to updateOfficeSpace method renter token instead of the provider one
+		System.out.println ( "\n--Try to update the office space passing to updateOfficeSpace method renter token instead of the provider one" );
+		
+		try 
+		{
+			uutOfficeProviderService.updateOfficeSpace( renterAccessToken, providerId, uutOfficeSpace);
+		} 
+		catch (OfficeSpaceNotFoundException e1)
+		{
+			String errorMessage = "\nERROR: Booking Exception has occurred";
+			System.out.println ( errorMessage );
+		} 
+		catch (AccessNotAllowedException e) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			System.out.println ( "As expected: Access has been denied" );
+		}
+		
+		// Set provider token status to false and try to update the office space
+		System.out.println ( "\n--Set provider token status to false and try to update the office space" );
+		providerAccessToken.setStatus( false );
+		try 
+		{
+			uutOfficeProviderService.updateOfficeSpace( providerAccessToken, providerId, uutOfficeSpace);
+		} 
+		catch (OfficeSpaceNotFoundException e1)
+		{
+			String errorMessage = "\nERROR: Booking Exception has occurred";
+			System.out.println ( errorMessage );
+		} 
+		catch (AccessNotAllowedException e) 
+		{
+			String errorMessage = "ERROR: Access is not allowed";
+			System.out.println ( errorMessage );
+		}
+		finally
+		{
+			System.out.println ( "As expected: Access has been denied" );
+		}
+		
+		// Logout from all 3 sessions
+		
+		try 
+		{
+			authService.logout( adminAccessToken, "admin" );
+			authService.logout( providerAccessToken, "fred" ); 
+			authService.logout( renterAccessToken, "katie" );
+		} 
+		catch ( LogoutFailedException e )
+		{
+			String errorMessage = "ERROR: Logout failure has occured";
+			System.out.println ( errorMessage );
+		} 
+		finally
+		{
+			System.out.println ( "\nLogged out from all 3 sessions: admin, provider and renter" );
+		}
+
     }
 }
 

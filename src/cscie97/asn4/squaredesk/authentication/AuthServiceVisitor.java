@@ -14,7 +14,7 @@ public class AuthServiceVisitor implements Visitor
 	
 	public AuthServiceVisitor()
 	{
-		inventory = "\nList of Authenication Service Inventory:\n  <Services>\n";
+		inventory = "\nList of Authenication Service Inventory:\n";
 	}
     
 	/**
@@ -24,7 +24,7 @@ public class AuthServiceVisitor implements Visitor
 	 */
 	public void visit( RegisteredUser regUser )
 	{
-		inventory += "  <Users>\n";
+		inventory += "  <User>\n";
 		inventory += "    User ID: "+regUser.getId()+"\n";
 		inventory += "    Name: "+regUser.getName()+"\n";
 		inventory += "    Credentials:\n";
@@ -46,7 +46,7 @@ public class AuthServiceVisitor implements Visitor
 	 */
 	public void visit( Entitlement ent )
 	{
-		inventory += "  <Roles>\n";
+		inventory += "  <Role>\n";
 		inventory += "    "+ent.getId()+":\n";
 		List<Entitlement> entList = ent.getEntList();
 		for ( Entitlement entit : entList )
@@ -65,7 +65,7 @@ public class AuthServiceVisitor implements Visitor
 	 */
 	public void visit( Service service )
 	{
-		//inventory += "  <Services>\n";
+		inventory += "  <Service>\n";
 		inventory += "    "+service.getId()+":\n";
 		List<Entitlement> permiList = service.getListOfPermissions();
 		for ( Entitlement perm : permiList )
