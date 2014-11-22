@@ -19,7 +19,7 @@ public class AuthServiceVisitor implements Visitor
     
 	/**
 	 * visit method ( intended to visit RegisteredUser instance )
-	 * @param RegisteredUser : regUser
+	 * @param regUser - RegisteredUser
 	 *
 	 */
 	public void visit( RegisteredUser regUser )
@@ -41,7 +41,7 @@ public class AuthServiceVisitor implements Visitor
 	
 	/**
 	 * visit method ( intended to visit Role instance )
-	 * @param Entitlement : ent
+	 * @param ent - Entitlement
 	 *
 	 */
 	public void visit( Entitlement ent )
@@ -60,7 +60,7 @@ public class AuthServiceVisitor implements Visitor
 	
 	/**
 	 * visit method ( intended to visit Role instance )
-	 * @param Entitlement : ent
+	 * @param service - Service
 	 *
 	 */
 	public void visit( Service service )
@@ -77,7 +77,9 @@ public class AuthServiceVisitor implements Visitor
 		}
 	}
 
-
+   /**
+    *@param permission - Permission 
+    */
 	public void visit( Permission permission ) 
 	{
 
@@ -86,7 +88,7 @@ public class AuthServiceVisitor implements Visitor
 
 	/**
 	 * accessor method, returns formatted inventory string 
-	 * @return String : inventory
+	 * @return inventory - string inventory
 	 */
 	public String getInventoryFromVisitor()
 	{

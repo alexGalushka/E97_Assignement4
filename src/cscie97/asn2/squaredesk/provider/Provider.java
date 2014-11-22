@@ -57,8 +57,10 @@ public class Provider implements Profile
 	
 	/**
 	 * Instantiates a new office provider.
+	 * @param picture uri for picture
+	 * @param contact - ContactInfo
 	 * @param officeSpaces the office spaces
-	 * @param guid the office provider guid
+	 * @param account - Account
 	 */
 	public Provider ( URI picture, ContactInfo contact,
 			          Map<String, OfficeSpace> officeSpaces, Account account )
@@ -118,8 +120,6 @@ public class Provider implements Profile
 
 	/**
 	 * mutator method for guid attribute.
-	 *
-	 * @return String
 	 */
 	public void setGuid ( String guid )
 	{
@@ -149,7 +149,7 @@ public class Provider implements Profile
 	/**
 	 * accessor method for officeSpacesMap attribute.
 	 *
-	 * @return Map<String, OfficeSpace>
+	 * @return Map
 	 */
 	public Map<String, OfficeSpace> getOfficeSpaces ()
 	{
@@ -179,7 +179,7 @@ public class Provider implements Profile
 	/**
 	 * accessor method for ratingsMap attribute.
 	 *
-	 * @return Map<String, Rating>
+	 * @return Map
 	 */
 	public Map<String, Rating> getRatingsMap ()
 	{
@@ -189,7 +189,7 @@ public class Provider implements Profile
 	/**
 	 * getter method for all ratings per office provider.
 	 *
-	 * @return List<Rating>
+	 * @return List of ratings
 	 */
 	public List<Rating> getAllRatings()
 	{
@@ -218,7 +218,7 @@ public class Provider implements Profile
 	
 	/**
 	 * add officeSpace Id to officeSpacesIds
-	 * @param String: officeSpacesId
+	 * @param officeSpacesId - office id String
 	 */
 	public void addOfficeSpacesIdToList( String officeSpacesId )
 	{

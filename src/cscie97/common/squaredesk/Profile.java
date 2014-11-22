@@ -25,7 +25,7 @@ public interface Profile
 	/**
 	 * accessor method for officeSpacesMap attribute.
 	 *
-	 * @return Map<String, OfficeSpace>
+	 * @return Map
 	 */
 	public Map<String, OfficeSpace> getOfficeSpaces ();
 	
@@ -34,21 +34,21 @@ public interface Profile
 	/**
 	 * mutator method for providerRatingsMap attribute.
 	 *
-	 * @param providerRatingsMap the provider ratings map
+	 * @param ratingsMap the provider ratings map
 	 */
 	public void setRatingsMap ( Map<String, Rating> ratingsMap );
 	
 	/**
 	 * accessor method for providerRatingsMap attribute.
 	 *
-	 * @return Map<String, Rating>
+	 * @return Map
 	 */
 	public Map<String, Rating> getRatingsMap ();
 	
 	/**
 	 * getter method for all ratings per office provider.
 	 *
-	 * @return List<Rating>
+	 * @return List
 	 */
 	public List<Rating> getAllRatings();
 	
@@ -64,7 +64,7 @@ public interface Profile
 	
 	/**
 	 * add officeSpace Id to officeSpacesIds
-	 * @param String: officeSpacesId
+	 * @param officeSpacesId - office id String
 	 */
 	public void addOfficeSpacesIdToList( String officeSpacesId );
 	

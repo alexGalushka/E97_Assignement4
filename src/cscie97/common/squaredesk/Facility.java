@@ -73,8 +73,8 @@ public class Facility
 	
 
 	/**
-	 * translator of the category and type to the format of <facilityType> and <facilityType_category> , 
-	 * packaged in the String[2], where first element <facilityType> , second - <facilityType_category>
+	 * translator of the category and type to the format of facilityType and facilityType_category , 
+	 * packaged in the String[2], where first element facilityType , second - facilityType_category
 	 * @return String[]
 	 */
 	public String[] getTraslatedCategoryAndType()

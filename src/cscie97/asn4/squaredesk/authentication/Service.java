@@ -30,8 +30,8 @@ public class Service implements Visitable
 	
 	/**
 	 * adds permission to the list of permissions
-	 * @param AccessToken : accToken
-	 * @param Permission : permList
+	 * @param accToken - access token
+	 * @param perm Permission
 	 */
 	public void addPermission( AccessToken accToken, Permission perm )
 	{
@@ -44,8 +44,8 @@ public class Service implements Visitable
 	
 	/**
 	 * removes permission from the list of permissions
-	 * @param AccessToken : accToken
-	 * @param Permission : permList
+	 * @param accToken - AccessToken
+	 * @param perm - Permission
 	 */
 	public void removePermission( AccessToken accToken, Permission perm )
 	{
@@ -58,7 +58,7 @@ public class Service implements Visitable
 	
 	/**
 	 * accessor method
-	 * @return List<Permission> : permiList
+	 * @return permiList
 	 */
 	public List<Entitlement> getListOfPermissions ()
 	{
@@ -96,7 +96,7 @@ public class Service implements Visitable
 
 	/**
 	 * mutator method
-	 * @param String : id; service's id to be set
+	 * @param id - service's id to be set
 	 */
 	public void setId(String id)
 	{
@@ -105,7 +105,7 @@ public class Service implements Visitable
 
 	/**
 	 * mutator method
-	 * @param String : name; service's name to be set
+	 * @param name - service's name to be set
 	 */
 	public void setName(String name)
 	{
@@ -114,7 +114,7 @@ public class Service implements Visitable
 
 	/**
 	 * mutator method
-	 * @param String : description; service's description to be set
+	 * @param description - service's description to be set
 	 */
 	public void setDescription(String description) 
 	{

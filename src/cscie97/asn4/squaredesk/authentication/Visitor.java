@@ -6,21 +6,21 @@ public interface Visitor
 
 	/**
 	 * visit method ( intended to visit RegisteredUser instance )
-	 * @param RegisteredUser : regUser
+	 * @param regUser - RegisteredUser
 	 *
 	 */
 	public void visit( RegisteredUser regUser );
 	
 	/**
 	 * visit method ( intended to visit Role instance )
-	 * @param Entitlement : ent
+	 * @param ent Entitlement
 	 *
 	 */
 	public void visit( Entitlement ent );
 	
 	/**
 	 * visit method ( intended to visit Role instance )
-	 * @param Entitlement : ent
+	 * @param service Service
 	 *
 	 */
 	public void visit( Service service );

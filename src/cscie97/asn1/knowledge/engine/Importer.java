@@ -39,8 +39,7 @@ public class Importer implements Observer
 	 * collect all required information from the OfficeSpaceImpl object matching the specified search criteria
 	 * (location, facility type and category, feature, minimum average rating) and present to the Renter Service
 	 *  Knowledge graph in the format of Triples
-	 *  Note: subject is concatenated string "provId&officeId"
-	 * @return List<Triple>
+	 *  Note: subject is concatenated string "provIdofficeId"
 	 */
 	public void collectSquareDeskInfoForSearch ()
 	{

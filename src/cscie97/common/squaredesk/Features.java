@@ -33,7 +33,7 @@ public class Features
 	/**
 	 * accessor method for allFeatures attribute.
 	 *
-	 * @return List<String>
+	 * @return List of strings
 	 */
 	public List<String> getAllFeatures ()
 	{

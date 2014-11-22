@@ -49,8 +49,6 @@ public class User
 	
 	/**
 	 * mutator method for guid attribute.
-	 *
-	 * @return String
 	 */
 	public void setGuid ( String guid )
 	{
@@ -96,7 +94,6 @@ public class User
 	/**
 	 * delete profile from the Map of Profiles
 	 * @throws ProfileNotFoundException 
-	 * @throws ProfileAlreadyExistsException 
 	 */
 	
 	public void deleteProfile (String type) throws ProfileNotFoundException 
@@ -115,7 +112,6 @@ public class User
 	/**
 	 * update profile of the Map of Profiles
 	 * @throws ProfileNotFoundException 
-	 * @throws ProfileAlreadyExistsException 
 	 */
 	
 	public void updateProfile (String type, Profile profile) throws ProfileNotFoundException 

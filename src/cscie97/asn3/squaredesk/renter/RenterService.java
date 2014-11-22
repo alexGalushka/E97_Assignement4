@@ -21,10 +21,10 @@ public interface RenterService
 
     /**
      * this method books the OfficeSpace based on the returned search of the criteria renter has 
-     * @param authToken
-     * @param uutRenter
-     * @throws BookingException 
-     * @throws AccessNotAllowedException 
+     * @param accToken - access token
+     * @param uutRenter - renter profile
+     * @throws BookingException if booking has failed
+     * @throws AccessNotAllowedException if access is not allowed
      */
     public Boolean bookOfficeSpace ( AccessToken accToken, Profile uutRenter, Rate rate, PaymentStatus paymentStatus ) throws BookingException, AccessNotAllowedException;
 	
@@ -32,7 +32,7 @@ public interface RenterService
      * wrapper method for the search method of Search Engine class, return list of office spaces based on the search criteria
      * @param accToken
      * @param uutRenter
-     * @return List<OfficeSpace> : officeSpacesList
+     * @return officeSpacesList
      * @throws AccessNotAllowedException 
      */
     public List<OfficeSpace> searchOfficeSpace ( AccessToken accToken, Profile uutRenter ) throws AccessNotAllowedException;
@@ -52,33 +52,32 @@ public interface RenterService
 	
 	/**
 	 * creates new Renter
-	 * @param AccessToken accToken
-	 * @param profile
-	 * @return
-	 * @throws ProfileAlreadyExistsException
-	 * @throws AccessNotAllowedException 
+	 * @param accToken AccessToken 
+	 * @param profile - profile
+	 * @return String
+	 * @throws ProfileAlreadyExistsException is provider already exist
+	 * @throws AccessNotAllowedException if access is not allowed
 	 */
 	public String createRenter ( AccessToken accToken, Profile  profile ) throws ProfileAlreadyExistsException, AccessNotAllowedException;
 	
 	/**
 	 * returns renter Profile
 	 * @param renterId
-	 * @return
+	 * @return Profile
 	 * @throws ProfileNotFoundException
 	 */
 	public Profile getRenter( String renterId ) throws ProfileNotFoundException;
 	
 	/**
 	 * Returns whole list of renters.
-	 * @return List<Renter>
+	 * @return List
 	 */
 	public List<Profile> getRenterList ();
 	
 	/**
 	 * Updates the renter, new renter instance has to be passed in.
 	 * If renterId not found, throws ProfileNotFoundException.
-	 * @param AccessToken accToken
-	 * @param renterId the renter id
+	 * @param accToken AccessToken 
 	 * @param renter the renter
 	 * @throws ProfileNotFoundException the renter not found exception
 	 * @throws AccessNotAllowedException 
@@ -88,11 +87,10 @@ public interface RenterService
 	/**
 	 * Deleted the renter
 	 * If renterId not found, throws ProfileNotFoundException.
-	 * @param AccessToken accToken
+	 * @param accToken AccessToken 
 	 * @param renterId the renter id
 	 * @throws ProfileNotFoundException the renter not found exception
 	 * @throws AccessNotAllowedException 
-	 * @throws OfficeSpaceNotFoundException 
 	 */
 	public void deleteRenter ( AccessToken accToken, String renterId ) throws ProfileNotFoundException, AccessNotAllowedException;
 	

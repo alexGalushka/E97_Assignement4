@@ -50,7 +50,7 @@ public interface ProviderService
 	/**
 	 * Deleted the provider.
 	 * If providerId not found, throws ProfileNotFoundException.
-	 * @param AccessToken accToken
+	 * @param accToken - access token
 	 * @param providerId the provider id
 	 * @throws ProfileNotFoundException the provider not found exception
 	 * @throws OfficeSpaceNotFoundException  if office space is not found
@@ -125,7 +125,7 @@ public interface ProviderService
 	
 	/**
 	 * Gets the office space guid list.
-	 * @return List<String>
+	 * @return List of strings
 	 */
 	public List<String> getOfficeSpaceGuidList ();
 	

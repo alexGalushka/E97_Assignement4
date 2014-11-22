@@ -69,11 +69,10 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	 * check if it exists already and throws ProviderAlreadyExistException if it does.
 	 *
 	 * @param accToken the auth token
-	 * @param provider the provider
+	 * @param profile the provider
 	 * @throws ProfileAlreadyExistsException if profile already exists
 	 * @throws AccessNotAllowedException if access is not allowed 
-	 * @throws ProviderAlreadyExistsException the provider already exists exception
-	 * @throws ProfileNotFoundException  if profile is not find
+	 * @throws ProfileAlreadyExistsException the provider already exists exception
 	 */
 	public String createProvider ( AccessToken accToken, Profile  profile ) throws ProfileAlreadyExistsException, AccessNotAllowedException 
 	{
@@ -382,7 +381,7 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	/**
 	 * Gets the office space guid list.
 	 *
-	 * @return List<String>
+	 * @return List
 	 */
 	public List<String> getOfficeSpaceGuidList ()
 	{
@@ -395,9 +394,8 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	/**
 	 * updates particular office space in the office space map with a new office space based on guid passed in
 	 * if the guid not found in the map, it throws OfficeSpaceNotFoundException exception.
-	 * @param AccessToken accTokenn
-	 * @param guid the guid
-	 * @param officeSpaceId the office space id
+	 * @param accToken AccessToken accToken
+	 * @param providerId the provider space id
 	 * @param updatedOffice the updated office
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 * @throws AccessNotAllowedException 
@@ -435,10 +433,9 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	/**
 	 * removed particular office space from the office space map based on guid passed in
 	 * if the guid not found in the map, it throws OfficeSpaceNotFoundException exception.
-	 * @param AccessToken accToken
-	 * @param guid the guid
+	 * @param accToken - access token
+	 * @param providerId - provider id string
 	 * @param officeSpaceId the office space id
-	 * @param updatedOffice the updated office
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 * @throws AccessNotAllowedException 
 	 */
@@ -557,7 +554,7 @@ public class ProviderServiceImpl implements ProviderService, Subject
 	 *
 	 * @param authToken the auth token
 	 * @param officeSpaceId the office space id
-	 * @return List<Rating>
+	 * @return Listof Ratings
 	 * @throws OfficeSpaceNotFoundException the office space not found exception
 	 */
 	public List<Rating> getOfficeSpaceRatingList  ( String authToken, String officeSpaceId ) throws OfficeSpaceNotFoundException 

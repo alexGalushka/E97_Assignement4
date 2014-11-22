@@ -66,7 +66,6 @@ public class OfficeSpace
 	 * @param rates the rates
 	 * @param ratings the ratings
 	 * @param name the name
-	 * @param officeSpaceGuid the office space guid
 	 */
 	public OfficeSpace ( List<String> commonAccess, Capacity capacity, Facility facility,
 			            Features features, List<Image> images, Location location,
@@ -238,7 +237,7 @@ public class OfficeSpace
 	/**
 	 * accessor method for images attribute.
 	 *
-	 * @return List<Image>
+	 * @return List
 	 */
 	public List<Image> getImages()
 	{
@@ -278,7 +277,7 @@ public class OfficeSpace
 	/**
 	 * accessor method for rates attribute.
 	 *
-	 * @return List<Rate>
+	 * @return List
 	 */
 	public List<Rate> getRates()
 	{
@@ -298,7 +297,7 @@ public class OfficeSpace
 	/**
 	 * accessor method for ratings attribute.
 	 *
-	 * @return Map<String, Rating>
+	 * @return Map
 	 */
 	public Map<String, Rating> getRatings()
 	{
@@ -308,7 +307,7 @@ public class OfficeSpace
 	/**
 	 * getter method for all ratings per office space.
 	 *
-	 * @return List<Rating>
+	 * @return List
 	 */
 	public List<Rating> getAllRatings()
 	{

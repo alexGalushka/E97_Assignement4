@@ -60,8 +60,6 @@ public class Renter implements Profile
 
 	/**
 	 * mutator method for guid attribute.
-	 *
-	 * @return String
 	 */
 	public void setGuid ( String guid )
 	{
@@ -89,7 +87,7 @@ public class Renter implements Profile
 	/**
 	 * getter method for all ratings per office provider.
 	 *
-	 * @return List<Rating>
+	 * @return List
 	 */
 	public List<Rating> getAllRatings()
 	{

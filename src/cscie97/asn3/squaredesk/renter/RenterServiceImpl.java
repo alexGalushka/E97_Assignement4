@@ -60,7 +60,7 @@ public class RenterServiceImpl implements RenterService
 
     /**
      * this method books the OfficeSpace based on the returned search of the criteria renter has 
-     * @param AccessToken accToken
+     * @param accToken - AccessToken 
      * @param uutRenter
      * @throws BookingException 
      * @throws AccessNotAllowedException 
@@ -97,7 +97,7 @@ public class RenterServiceImpl implements RenterService
      * wrapper method for the search method of Search Engine class, return list of office spaces based on the search criteria
      * @param accToken
      * @param uutRenter
-     * @return List<OfficeSpace> : officeSpacesList
+     * @return officeSpacesList
      * @throws AccessNotAllowedException 
      */
     public List<OfficeSpace> searchOfficeSpace ( AccessToken accToken, Profile uutRenter ) throws AccessNotAllowedException
@@ -133,9 +133,9 @@ public class RenterServiceImpl implements RenterService
 	
 	/**
 	 * creates new Renter
-	 * @param AccessToken accToken
+	 * @param accToken - access token
 	 * @param profile
-	 * @return
+	 * @return String
 	 * @throws ProfileAlreadyExistsException
 	 * @throws AccessNotAllowedException 
 	 */
@@ -161,7 +161,7 @@ public class RenterServiceImpl implements RenterService
 	/**
 	 * returns renter Profile
 	 * @param renterId
-	 * @return
+	 * @return Profile
 	 * @throws ProfileNotFoundException
 	 */
 	public Profile getRenter( String renterId ) throws ProfileNotFoundException
@@ -182,7 +182,7 @@ public class RenterServiceImpl implements RenterService
 	
 	/**
 	 * Returns whole list of renters.
-	 * @return List<Renter>
+	 * @return List of renters
 	 */
 	public List<Profile> getRenterList ()
 	{
@@ -208,8 +208,7 @@ public class RenterServiceImpl implements RenterService
 	/**
 	 * Updates the renter, new renter instance has to be passed in.
 	 * If renterId not found, throws ProfileNotFoundException.
-	 * @param AccessToken accToken
-	 * @param renterId the renter id
+	 * @param accToken - AccessToken 
 	 * @param renter the renter
 	 * @throws ProfileNotFoundException the renter not found exception
 	 * @throws AccessNotAllowedException 
@@ -237,11 +236,10 @@ public class RenterServiceImpl implements RenterService
 	/**
 	 * Deleted the renter
 	 * If renterId not found, throws ProfileNotFoundException.
-	 * @param AccessToken accToken
+	 * @param accToken AccessToken 
 	 * @param renterId the renter id
 	 * @throws ProfileNotFoundException the renter not found exception
 	 * @throws AccessNotAllowedException 
-	 * @throws OfficeSpaceNotFoundException 
 	 */
 	public void deleteRenter ( AccessToken accToken, String renterId ) throws ProfileNotFoundException, AccessNotAllowedException
 	{

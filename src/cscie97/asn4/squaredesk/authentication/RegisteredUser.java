@@ -36,7 +36,7 @@ public class RegisteredUser implements Visitable
 	/**
 	 * adds entitlement to the list of entitlement
 	 * Admin restricted method
-	 * @param Permission : permList
+	 * @param ent Entitlement
 	 */
 	public void addEntitlement( Entitlement ent )
 	{
@@ -50,7 +50,7 @@ public class RegisteredUser implements Visitable
 	/**
 	 * removes entitlement from the list of entitlement
 	 * Admin restricted method
-	 * @param Permission : permList
+	 * @param ent Entitlement
 	 */
 	public void removeEntitlement( Entitlement ent )
 	{
@@ -100,7 +100,7 @@ public class RegisteredUser implements Visitable
 	
 	/**
 	 * accessor method
-	 * @return List<Entitlement> : entiList
+	 * @return  entiList List of Entitlements
 	 */
 	public List<Entitlement> getListOfEntitlements ()
 	{
@@ -127,7 +127,7 @@ public class RegisteredUser implements Visitable
 	
 	/**
 	 * mutator method
-	 * @param String : id; service's id to be set
+	 * @param id - service's id to be set
 	 */
 	public void setId(String id)
 	{
@@ -136,7 +136,7 @@ public class RegisteredUser implements Visitable
 
 	/**
 	 * mutator method
-	 * @param String : name; service's name to be set
+	 * @param name - service's name to be set
 	 */
 	public void setName(String name)
 	{
@@ -146,7 +146,7 @@ public class RegisteredUser implements Visitable
 	/**
 	 * method used in Visitor pattern implementation,
 	 * used by all Visitables to provide access to their instances by the Visitor
-	 * @param Visitor : v
+	 * @param v - Visitor
 	 */
 	public void acceptVisitor( Visitor v )
 	{

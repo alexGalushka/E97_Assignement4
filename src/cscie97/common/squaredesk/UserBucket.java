@@ -51,7 +51,7 @@ public class UserBucket
     /** 
      * get the user by ID
      * @param userId
-     * @return
+     * @return User
      */
     public User getUser (String userId)
     {

@@ -33,25 +33,25 @@ public interface Entitlement extends Visitable
 
 	/**
 	 * mutator method
-	 * @param String : id; roles's id to be set
+	 * @param id - roles's id to be set
 	 */
 	public void setId(String id);
 
 	/**
 	 * mutator method
-	 * @param String : name; roles' name to be set
+	 * @param name - roles' name to be set
 	 */
 	public void setName(String name);
 
 	/**
 	 * mutator method
-	 * @param String : description; role's description to be set
+	 * @param description - role's description to be set
 	 */
 	public void setDescription(String description);
 	
 	/**
 	 * accessor method
-	 * @return List<Entitlement> : entList
+	 * @return entList - List of Entitlements 
 	 */
 	public List<Entitlement> getEntList();
 }

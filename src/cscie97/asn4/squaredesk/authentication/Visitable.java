@@ -5,7 +5,7 @@ public interface Visitable
 	/**
 	 * method used in Visitor pattern implementation,
 	 * used by all Visitables to provide access to their instances by the Visitor
-	 * @param Visitor : v
+	 * @param v - Visitor
 	 */
 	void acceptVisitor ( Visitor v );
 }

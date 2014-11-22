@@ -81,7 +81,7 @@ public class SchedulingService
 	
 	/**
 	 * add the new booking to the bookingMap
-	 * @param Booking: booking
+	 * @param booking - Booking
 	 * @throws BookingException
 	 */
 	public boolean createBooking ( Booking booking ) throws BookingException
@@ -119,7 +119,9 @@ public class SchedulingService
 	
 	/**
 	 * this method check if certain Office Space (OS) is available for rent for "booked dates"
-	 * @param Booking: booking 
+	 * @param office - OfficeSpace
+	 * @param startDate - start Date
+	 * @param endDate - end Date
 	 * @return true if OS is available and false if not
 	 */
 	public boolean checkAvailability ( OfficeSpace office, Date startDate, Date endDate )
@@ -203,8 +205,8 @@ public class SchedulingService
 	
 	/**
 	 * this private method updates the bookingMap with a new booking
-	 * @param String: date
-	 * @param Booking: booking
+	 * @param date - String
+	 * @param booking - Booking
 	 */
 	private void updateBookingMap ( String date, Booking booking )
 	{
@@ -231,8 +233,8 @@ public class SchedulingService
 	
 	/**
 	 * this private method converts the start and end dates to the rage of consecutive dates
-	 * @param String: startDate
-	 * @param String: endDate
+	 * @param startDate - string start date
+	 * @param endDate - string end date
 	 * @return the list of consecutive dates
 	 */
 	private List<String> getDatesRange (String startDate, String endDate)

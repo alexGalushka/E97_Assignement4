@@ -14,7 +14,7 @@ public class QueryEngine
 	 * Executes a single query on the knowledge graph, checks for non null and well formed query string, throws QueryEngineException
      * on error. 
 	 * @param query - type: String
-	 * @return 
+	 * @return  set of triples
 	 * @throws QueryEngineException
 	 */
 	public Set<Triple> executeQuery ( String query ) throws QueryEngineException

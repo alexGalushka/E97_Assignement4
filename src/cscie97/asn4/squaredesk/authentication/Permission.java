@@ -53,7 +53,7 @@ public class Permission implements Visitable, Entitlement
 
 	/**
 	 * mutator method
-	 * @param String : id; permission's id to be set
+	 * @param id - permission's id to be set
 	 */
 	public void setId(String id)
 	{
@@ -62,7 +62,7 @@ public class Permission implements Visitable, Entitlement
 
 	/**
 	 * mutator method
-	 * @param String : name; permission's name to be set
+	 * @param name -  permission's name to be set
 	 */
 	public void setName(String name)
 	{
@@ -71,7 +71,7 @@ public class Permission implements Visitable, Entitlement
 
 	/**
 	 * mutator method
-	 * @param String : description; permission's description to be set
+	 * @param description -  permission's description to be set
 	 */
 	public void setDescription(String description) 
 	{

@@ -29,8 +29,8 @@ public class Utilities
 
 	/**
 	 * Removes last character from the string
-	 * @param s - type: String
-	 * @return
+	 * @param s - String
+	 * @return string
 	 */
 	public String removeLastChar(String s) {
 	    if (!s.isEmpty() && s != null)
